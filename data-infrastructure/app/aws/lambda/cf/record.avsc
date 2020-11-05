@@ -1,0 +1,34 @@
+{
+  "type": "record",
+  "namespace": "com.pets",
+  "name": "Pet",
+  "fields": [
+    { "name": "recordId", "type": "string" },
+    { "name": "timestamp", "type": "int" },
+    {
+      "name": "data",
+      "type": {
+        "type": "record",
+        "name": "event",
+        "fields": [
+          { "name": "eventID", "type": "string" },
+          { "name": "eventName", "type": "string" },
+          { "name": "eventVersion", "type": "string" },
+          { "name": "eventSource", "type": "string" },
+          { "name": "awsRegion", "type": "string" },
+          {
+            "name": "dyanmodb",
+            "type": {
+              "type": "record",
+              "name": "record_update_info",
+              "fields": [
+                { "name": "ApproximateCreationDateTime", "type": "float" }
+              ]
+            }
+          },
+          { "name": "eventSourceARN", "type": "string" }
+        ]
+      }
+    }
+  ]
+}

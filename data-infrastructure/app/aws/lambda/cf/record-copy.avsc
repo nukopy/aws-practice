@@ -1,0 +1,84 @@
+{
+  "type": "record",
+  "namespace": "com.pets",
+  "name": "Pet",
+  "fields": [
+    { "name": "recordId", "type": "string" },
+    { "name": "timestamp", "type": "int" },
+    {
+      "name": "data",
+      "type": {
+        "name": "event",
+        "type": "record",
+        "fields": [
+          { "name": "eventID", "type": "string" },
+          { "name": "eventName", "type": "string" },
+          { "name": "eventVersion", "type": "string" },
+          { "name": "eventSource", "type": "string" },
+          { "name": "awsRegion", "type": "string" },
+          {
+            "name": "dyanmodb",
+            "type": {
+              "type": "record",
+              "name": "record_update_info",
+              "fields": [
+                { "name": "ApproximateCreationDateTime", "type": "float" },
+                {
+                  "name": "Keys",
+                  "type": {
+                    "type": "record",
+                    "name": "keys",
+                    "fields": [
+                      {
+                        "name": "shop_id",
+                        "type": "map",
+                        "values": ["string", "int"]
+                      },
+                      {
+                        "name": "pet_id",
+                        "type": "map",
+                        "values": ["string", "int"]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name": "NewImage",
+                  "type": {
+                    "type": "record",
+                    "name": "record_update_info",
+                    "fields": [
+                      {
+                        "name": "shop_id",
+                        "type": "map",
+                        "values": "string"
+                      },
+                      {
+                        "name": "pet_id",
+                        "type": "map",
+                        "values": "string"
+                      },
+                      {
+                        "name": "kind",
+                        "type": "map",
+                        "values": "string"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          { "name": "eventSourceARN", "type": "string" }
+        ]
+      }
+    },
+    {
+      "name": "result",
+      "type": "enum",
+      "namespace": "ResultFlag",
+      "doc": "result flags AWS supports",
+      "symbols": ["Dropped", "Ok", "ProcessingFailed"]
+    }
+  ]
+}
