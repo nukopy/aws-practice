@@ -1,0 +1,1 @@
+aws lambda update-function-code --function-name firehose-pets-json-to-avro --zip-file fileb://function.zip
