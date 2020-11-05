@@ -1,6 +1,12 @@
 .vscode/
 .envrc
 
+# AWS Lambda
+**/package/
+
+# JX
+docs/note.md
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
