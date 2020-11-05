@@ -1,0 +1,10 @@
+{
+  "type": "record",
+  "namespace": "com.pets",
+  "name": "Pet",
+  "fields": [
+    { "name": "pet_id", "type": "string" },
+    { "name": "shop_id", "type": "int" },
+    { "name": "kind", "type": "string" }
+  ]
+}

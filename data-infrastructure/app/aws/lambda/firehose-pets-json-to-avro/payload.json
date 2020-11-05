@@ -1,0 +1,62 @@
+[
+  {
+    "shop_id": 8,
+    "kind": "cat",
+    "pet_id": "TRmXo",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 5,
+    "kind": "dog",
+    "pet_id": "cYAJf",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 6,
+    "kind": "cat",
+    "pet_id": "isLQM",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 2,
+    "kind": "dog",
+    "pet_id": "hdwFj",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 10,
+    "kind": "cat",
+    "pet_id": "g1QLW",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 10,
+    "kind": "dog",
+    "pet_id": "hKJQ7",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 3,
+    "kind": "bird",
+    "pet_id": "HLg2O",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 1,
+    "kind": "bird",
+    "pet_id": "Wg8WX",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 9,
+    "kind": "cat",
+    "pet_id": "J9cB3",
+    "result": "Ok"
+  },
+  {
+    "shop_id": 4,
+    "kind": "bird",
+    "pet_id": "SjZem",
+    "result": "Ok"
+  }
+]
