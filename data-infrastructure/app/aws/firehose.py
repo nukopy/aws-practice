@@ -9,7 +9,7 @@ class Firehose(Base):
         super().__init__("firehose")
         self.firehose_stream = os.getenv("KINESIS_FIREHOSE_STREAM")
 
-    def create_item(self, record: Dict[str, Any]) -> None:
+    def put_item(self, record: Dict[str, Any]) -> None:
         self.client.put_record(DeliveryStreamName=self.firehose_stream, Record=record)
 
     def batch_putting(self, records: List[Dict[str, Any]]) -> None:
