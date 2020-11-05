@@ -1,0 +1,329 @@
+{
+  "Records": [
+    {
+      "eventID": "b8fc1d7dce0c9f1be8722a3614d028c4",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604478975.0,
+        "Keys": { "shop_id": { "N": "4" }, "pet_id": { "S": "BrAYQ" } },
+        "OldImage": {
+          "shop_id": { "N": "4" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "BrAYQ" }
+        },
+        "SequenceNumber": "834800000000015894115989",
+        "SizeBytes": 48,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "b79fc74ad10c396ba1034a8ac4a51c41",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604478975.0,
+        "Keys": { "shop_id": { "N": "3" }, "pet_id": { "S": "Cc21F" } },
+        "OldImage": {
+          "shop_id": { "N": "3" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "Cc21F" }
+        },
+        "SequenceNumber": "834900000000015894116007",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "25ae75c1d53e3660022bf1653eb10f04",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604478975.0,
+        "Keys": { "shop_id": { "N": "8" }, "pet_id": { "S": "Bsjug" } },
+        "OldImage": {
+          "shop_id": { "N": "8" },
+          "kind": { "S": "cat" },
+          "pet_id": { "S": "Bsjug" }
+        },
+        "SequenceNumber": "835000000000015894116008",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "52a6dfdca74328f5e0a80927080afb55",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604478975.0,
+        "Keys": { "shop_id": { "N": "5" }, "pet_id": { "S": "EB7ye" } },
+        "OldImage": {
+          "shop_id": { "N": "5" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "EB7ye" }
+        },
+        "SequenceNumber": "835100000000015894116009",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "fbcdb85f97b45a9ce9f0ce41ad3aa1c0",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604478975.0,
+        "Keys": { "shop_id": { "N": "2" }, "pet_id": { "S": "EAg6c" } },
+        "OldImage": {
+          "shop_id": { "N": "2" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "EAg6c" }
+        },
+        "SequenceNumber": "835200000000015894116010",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "d4de62073d82e51bb7d35fb0e620b0d4",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "1" }, "pet_id": { "S": "SMkaX" } },
+        "NewImage": {
+          "shop_id": { "N": "1" },
+          "kind": { "S": "cat" },
+          "pet_id": { "S": "SMkaX" }
+        },
+        "SequenceNumber": "835300000000015894885661",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "86f28f26177d29203b50d86de9e5f6e5",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "7" }, "pet_id": { "S": "o0Jaw" } },
+        "NewImage": {
+          "shop_id": { "N": "7" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "o0Jaw" }
+        },
+        "SequenceNumber": "835400000000015894885701",
+        "SizeBytes": 48,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "bb5965049a44b381ee1df0853677937d",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "1" }, "pet_id": { "S": "MBQ4p" } },
+        "NewImage": {
+          "shop_id": { "N": "1" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "MBQ4p" }
+        },
+        "SequenceNumber": "835500000000015894885702",
+        "SizeBytes": 48,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "edc20257e7a5724a6e6f01ecde767b85",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "1" }, "pet_id": { "S": "7c2oP" } },
+        "NewImage": {
+          "shop_id": { "N": "1" },
+          "kind": { "S": "cat" },
+          "pet_id": { "S": "7c2oP" }
+        },
+        "SequenceNumber": "835600000000015894885704",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "759f393978870da412daf742efdc7e33",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "3" }, "pet_id": { "S": "XxGvP" } },
+        "NewImage": {
+          "shop_id": { "N": "3" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "XxGvP" }
+        },
+        "SequenceNumber": "835700000000015894885705",
+        "SizeBytes": 48,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "6e9454962262ba9ced3ae22616ce699f",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "3" }, "pet_id": { "S": "XvApT" } },
+        "NewImage": {
+          "shop_id": { "N": "3" },
+          "kind": { "S": "cat" },
+          "pet_id": { "S": "XvApT" }
+        },
+        "SequenceNumber": "835800000000015894885706",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "0051d42296a56c9cd8f1ba4c0ff75e77",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "2" }, "pet_id": { "S": "P2CrH" } },
+        "NewImage": {
+          "shop_id": { "N": "2" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "P2CrH" }
+        },
+        "SequenceNumber": "835900000000015894885707",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "0ecd3e91efc8e589359b4cc74c297ae0",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "1" }, "pet_id": { "S": "mZgV4" } },
+        "NewImage": {
+          "shop_id": { "N": "1" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "mZgV4" }
+        },
+        "SequenceNumber": "836000000000015894885708",
+        "SizeBytes": 48,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "77bc1eb1a87f2351ee10a9ad0860f73e",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "4" }, "pet_id": { "S": "qpGzT" } },
+        "NewImage": {
+          "shop_id": { "N": "4" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "qpGzT" }
+        },
+        "SequenceNumber": "836100000000015894885709",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "33152112d7d0bfacb6c3d34b07ace2b6",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604481564.0,
+        "Keys": { "shop_id": { "N": "1" }, "pet_id": { "S": "CqfTx" } },
+        "NewImage": {
+          "shop_id": { "N": "1" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "CqfTx" }
+        },
+        "SequenceNumber": "836200000000015894885710",
+        "SizeBytes": 47,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    },
+    {
+      "eventID": "15249d63cce51a5b9c1ae0369679604b",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604482615.0,
+        "Keys": { "shop_id": { "N": "5" }, "pet_id": { "S": "ICUBx" } },
+        "NewImage": {
+          "shop_id": { "N": "5" },
+          "kind": { "S": "dog" },
+          "pet_id": { "S": "ICUBx" }
+        },
+        "OldImage": {
+          "shop_id": { "N": "5" },
+          "kind": { "S": "bird" },
+          "pet_id": { "S": "ICUBx" }
+        },
+        "SequenceNumber": "837300000000015895196933",
+        "SizeBytes": 75,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/pet-shop/stream/2020-11-04T07:17:52.830"
+    }
+  ]
+}
