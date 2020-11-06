@@ -1,0 +1,164 @@
+{
+  "Records": [
+    {
+      "eventID": "689feae8d829e63ea3bf129e2c638238",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "D5nvp" }, "category": { "N": "9" } },
+        "NewImage": { "id": { "S": "D5nvp" }, "category": { "N": "9" } },
+        "SequenceNumber": "17300000000042569030647",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "7b953dcb2049d161c434184a71e2e876",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "8ZbSb" }, "category": { "N": "7" } },
+        "NewImage": { "id": { "S": "8ZbSb" }, "category": { "N": "7" } },
+        "SequenceNumber": "17400000000042569030672",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "7c0c295340118c35820344f92870ef93",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "4KCAe" }, "category": { "N": "7" } },
+        "NewImage": { "id": { "S": "4KCAe" }, "category": { "N": "7" } },
+        "SequenceNumber": "17500000000042569030673",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "3f4281aff39273f68530cb51f83bb668",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "08n68" }, "category": { "N": "6" } },
+        "NewImage": { "id": { "S": "08n68" }, "category": { "N": "6" } },
+        "SequenceNumber": "17600000000042569030674",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "3a2548e1167266084fb0a2f45b1ee75a",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "lQDA0" }, "category": { "N": "7" } },
+        "NewImage": { "id": { "S": "lQDA0" }, "category": { "N": "7" } },
+        "SequenceNumber": "17700000000042569030675",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "aaf6ab71c8525ad999fd62804ba0be71",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "WGgsg" }, "category": { "N": "6" } },
+        "NewImage": { "id": { "S": "WGgsg" }, "category": { "N": "6" } },
+        "SequenceNumber": "17800000000042569030676",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "4d113bb1497b5e6d4cfaaa0edbca1cbd",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "TryoZ" }, "category": { "N": "6" } },
+        "NewImage": { "id": { "S": "TryoZ" }, "category": { "N": "6" } },
+        "SequenceNumber": "17900000000042569030677",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "e255dc277ef0b016e95b4ad940fd5a40",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "FZcuR" }, "category": { "N": "4" } },
+        "NewImage": { "id": { "S": "FZcuR" }, "category": { "N": "4" } },
+        "SequenceNumber": "18000000000042569030678",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "bfd88c0fa241e93aa5b4acbc532c029e",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "OmSAJ" }, "category": { "N": "4" } },
+        "NewImage": { "id": { "S": "OmSAJ" }, "category": { "N": "4" } },
+        "SequenceNumber": "18100000000042569030679",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    },
+    {
+      "eventID": "f8b5dfda09798e5b324a0a90dae52a4f",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "ap-northeast-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1604625898.0,
+        "Keys": { "id": { "S": "FmzAN" }, "category": { "N": "3" } },
+        "NewImage": { "id": { "S": "FmzAN" }, "category": { "N": "3" } },
+        "SequenceNumber": "18200000000042569030680",
+        "SizeBytes": 34,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+    }
+  ]
+}
