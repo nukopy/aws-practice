@@ -206,3 +206,13 @@ Firehose encountered timeout errors when calling AWS Lambda
 ### ソースレコードのバックアップ
 
 Kinesis Data Firehose は，変換されたレコードを送信先に配信すると同時に，変換されなかった全てのレコードを S3 バケットにバックアップできる．ソースレコードのバックアップは，配信ストリームの作成または更新時に有効にすることができる．ソースレコードのバックアップは，有効にした後で無効にすることはできない．
+
+### サブスクリプションフィルタ使うときの罠
+
+デシリアライズするときの罠
+
+- DynamoDB から送られてくるとき
+  - base64 -> json string -> json
+- CloudWatch Logs から送られてくるとき
+  - base64 -> gzip string -> json string -> json
+  - **gzip 圧縮されてる文字列を解凍する必要がある**
