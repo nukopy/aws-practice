@@ -1,0 +1,9 @@
+{
+  "Statement":[
+    {
+      "Effect":"Allow",
+      "Action":["firehose:*"],
+      "Resource":["arn:aws:firehose:ap-northeast-1:489089015667:*"]
+    }
+  ]
+}
