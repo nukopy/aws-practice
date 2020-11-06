@@ -77,3 +77,132 @@ Amazon Kinesis Data Firehose では，最低料金やセットアップ費用は
   - "Test with demo data" というセクションからテストデータを Firehose へロードすることができる．テストが実行されると，パイプラインが動き，最終成果物として S3 へ吐き出される．
   - デバッグは，Lambda のログ，S3 へ吐き出されているログを確認することにより行う．
   - Kinesis Firehose のログは，S3 か噛ませている Lambda でしか拾えない．
+
+## Amazon Kinesis Data Firehose のデータ変換
+
+- 公式 doc：[Amazon Kinesis Data Firehose のデータ変換](https://docs.aws.amazon.com/ja_jp/firehose/latest/dev/data-transformation.html)
+
+Kinesis Data Firehose では，Lambda 関数を呼び出して，受信した送信元データを変換してから送信先に配信できる．Kinesis Data Firehose のデータ変換は，配信ストリームの作成時に有効にすることができる．
+
+### 大前提
+
+- transformation を動かす前に，現在の配信ストリームが Lambda への権限があるかをチェックする．そうしないとログが S3 に行かないと見れない．データ変換に指定した Lambda には呼び出されていないのでログが吐かれないし，Firehose のブラウザからのエラーも見れない．
+- Firehose にデータを流し込んでも，バッファのせいで 5 min くらい経たないとログが吐かれないことがある．気長に待とう．
+
+### データ変換フロー
+
+Kinesis Data Firehose データ変換を有効にすると，Kinesis Data Firehose はデフォルトで最大 3 MB まで受信データをバッファする（バッファサイズを調整するには，`ProcessingConfiguration` API を `BufferSizeInMBs` と呼ばれる ProcessorParameter と共に使用する）．
+
+- コメント
+  - **Buffer size だと 6 MB までできるけど，データ変換利用すると少なくなるの？**
+
+次に，Kinesis Data Firehose は，AWS Lambda 同期呼び出しモードを使用して，バッファされた各バッチで，指定された Lambda 関数を非同期的に呼び出す．
+
+- コメント
+  - **どの単位で Lambda の呼び出しが起こり，どの単位でデータ変換後のデータが送信されるのか？**
+
+変換されたデータは，Lambda から Kinesis Data Firehose に送信される．
+その後，変換されたデータは，**指定された送信先のバッファサイズとバッファ間隔のいずれかに到達したとき**，Kinesis Data Firehose より送信先に送信される．到達順序は関係ない．
+
+- 重要
+  - **Lambda 同期呼び出しモードには，リクエストとレスポンスの両方について，ペイロードサイズに 6 MB の制限がある**
+  - **関数にリクエストを送信するためのバッファサイズが 6 MB 以下であることを確認すること．また，関数より返るレスポンスが 6 MB を超えないことを確認すること．**
+
+### データ変換とステータスモデル
+
+Lambda からの全ての変換されたレコードには，以下のパラメータが含まれる必要がある．含まれない場合，Kinesis Data Firehose はそれらのレコードを拒否し，データ変換の失敗として処理する．
+
+- `recordId`
+  - レコード ID は，呼び出し時に Kinesis Data Firehose から Lambda に渡される．変換されたレコードには，同じレコード ID が含まれる必要がある．元のレコードの ID と変換されたレコードの ID との不一致は，データ変換失敗として扱われる．
+  - つまり，**Lambda の event として送られてきたレコードのレコード ID は変換の前後で変わってはいけない**
+
+- `result`
+  - レコードのデータ変換のステータス
+  - 指定できる値は次のとおり：
+    - `Ok`（レコードが正常に変換された）
+    - `Dropped`（レコードが処理ロジックによって意図的に削除された）
+    - `ProcessingFailed`（レコードを変換できなかった）
+  - レコードのステータスが `Ok` または `Dropped` の場合，Kinesis Data Firehose はレコードが正常に処理されたとみなす．それ以外の場合，Kinesis Data Firehose はレコードが処理に失敗したとみなす．
+- `data`
+  - base64 エンコード後の変換されたデータペイロード
+  - Python 内で base64 エンコードされた str 型に変換しないといけない
+    - `"[base64 に変換された文字列]\n"`
+
+## Lambda 設計図（Lambda blueprint）
+
+データ変換用の Lambda 関数を作成するために使用できる設計図があります。これらの設計図の一部は AWS Lambda コンソールにあり、一部は AWS Serverless Application Repository にあります。
+
+AWS Lambda コンソールで使用可能な設計図を表示するには
+
+AWS マネジメントコンソール にサインインし、https://console.aws.amazon.com/lambda/ にある AWS Lambda コンソールを開きます。
+
+[関数の作成]、[Use a blueprint (設計図の使用)] の順に選択します。
+
+[設計図] フィールドで、キーワード firehose で検索して Kinesis Data Firehose Lambda 設計図を見つけます。
+
+AWS Serverless Application Repository で使用可能な設計図を表示するには
+
+AWS Serverless Application Repository に移動します。
+
+Browse all applications を選択します。
+
+[アプリケーション] フィールドで、キーワード firehose を検索します。
+
+設計図を使用せずに Lambda 関数を作成することもできます。「AWS Lambda の開始方法」を参照してください。
+
+### データ変換失敗の処理
+
+ネットワークタイムアウトのために，または Lambda 呼び出しの制限に達したために，Lambda 関数呼び出しが失敗した場合，Kinesis Data Firehose は呼び出しをデフォルトで 3 回再試行する．
+
+呼び出しが成功しなければ，Kinesis Data Firehose はそのレコードのバッチをスキップする．スキップされたレコードは処理失敗として扱われる．
+
+`CreateDeliveryStream` または `UpdateDestination` API を使用して，再試行オプションを指定または上書きできる．このタイプの失敗の場合，呼び出しエラーログを Amazon CloudWatch Logs に出力できる．詳細については，「CloudWatch Logs を使用した Kinesis Data Firehose のモニタリング」を参照．
+
+レコードのデータ変換のステータスが `ProcessingFailed` の場合，Kinesis Data Firehose はそのレコードを処理失敗として扱う．このタイプの失敗の場合，エラーログを Lambda 関数から Amazon CloudWatch Logs に出力できる．詳細については，AWS Lambda Developer Guideの「AWS Lambda の Amazon CloudWatch Logs へのアクセス」を参照．
+
+データ変換が失敗した場合，処理に失敗したレコードは S3 バケットの processing-failed フォルダに配信されます。レコードの形式は以下のとおり．
+
+- データ変換失敗時に S3 に吐かれるエラーログ（S3 のオブジェクト）
+
+```json
+{
+    "attemptsMade": "count",
+    "arrivalTimestamp": "timestamp",
+    "errorCode": "code",
+    "errorMessage": "message",
+    "attemptEndingTimestamp": "timestamp",
+    "rawData": "data",
+    "lambdaArn": "arn"
+}
+```
+
+- `attemptsMade`
+  - 呼び出しリクエストの試行回数
+- `arrivalTimestamp`
+  - Kinesis Data Firehose がレコードを受信した時間
+- `errorCode`
+  - Lambda から返された HTTP エラーコード
+- `errorMessage`
+  - Lambda から返されたエラーメッセージ
+- `attemptEndingTimestamp`
+  - Kinesis Data Firehose が Lambda 呼び出しの試行を停止した時間
+- `rawData`
+  - base64 エンコード後のレコードデータ
+- `lambdaArn`
+  - Lambda 関数の Amazon リソースネーム (ARN)
+
+### Lambda の呼び出し時間
+
+Kinesis Data Firehose では，最大 5 分の Lambda 呼び出し時間がサポートされる．Lambda 関数の完了に 5 分を超える時間がかかる場合は，次のエラーが表示されます：
+
+```txt
+Firehose encountered timeout errors when calling AWS Lambda
+（Firehose で，AWS Lambda を呼び出すときにタイムアウトエラーが発生しました）
+```
+
+サポートされている最大の関数タイムアウトは 5 分である．
+このようなエラーが発生した場合の Kinesis Data Firehose による処理の詳細については，「データ変換失敗の処理」を参照してください。
+
+### ソースレコードのバックアップ
+
+Kinesis Data Firehose は，変換されたレコードを送信先に配信すると同時に，変換されなかった全てのレコードを S3 バケットにバックアップできる．ソースレコードのバックアップは，配信ストリームの作成または更新時に有効にすることができる．ソースレコードのバックアップは，有効にした後で無効にすることはできない．
