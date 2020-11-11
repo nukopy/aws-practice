@@ -47,5 +47,5 @@ TODO: いろいろ整ってからで良い
     - `test-enjou-cloudwatch-logs-to-s3-avro`
       - Avro 形式に変換後のログファイル用のバケット
       - Lambda 関数 `test-enjou-s3-to-s3-avro-transformation` により，このバケットに Avro 形式のファイルが吐かれる
-- IAM
-  - TODO: 各サービスがどのサービスへのアクセス権限があるかというのを定義するための色んなロールが必要になる
+- **IAM**
+  - TODO: 各サービスがどのサービスへのアクセス権限があるかというのを定義するための色んなロール，ポリシーが必要になる
