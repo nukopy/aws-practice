@@ -56,7 +56,9 @@ def read_avro(filepath: str = "output/sample-log.avro") -> List[Dict[str, Any]]:
 
 
 def lambda_handler(event, context):
-    print(event)
+    print(json.dumps(event))
+
+    # convert JSON-line format logs to Avro format file
     for record in event["Records"]:
         bucket = record["s3"]["bucket"]["name"]
         target_bucket = "{}-{}".format(bucket, SUFFIX)
@@ -87,5 +89,6 @@ if __name__ == "__main__":
     # )
 
     print("===== Read Avro format =====")
-    records = read_avro("./output/sample-log.avro")
+    path = "./output/test-enjou-cloudwatch-logs-to-s3-7-2020-11-11-09-37-51-8fa81d73-e657-44d7-9fb3-555198e92570.avro"
+    records = read_avro(path)
     print(records)
