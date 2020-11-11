@@ -89,6 +89,6 @@ if __name__ == "__main__":
     # )
 
     print("===== Read Avro format =====")
-    path = "./output/test-enjou-cloudwatch-logs-to-s3-7-2020-11-11-09-37-51-8fa81d73-e657-44d7-9fb3-555198e92570.avro"
+    path = "./output/SUCCESS-test-enjou-cloudwatch-logs-to-s3-7-2020-11-11-10-21-42-ef08b3d1-15f8-4e74-9cfd-411ef69f55e1.avro"
     records = read_avro(path)
     print(records)
