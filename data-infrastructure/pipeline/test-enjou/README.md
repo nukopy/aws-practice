@@ -2,6 +2,6 @@
 
 AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Firehose -> S3
 
-- システムアーキテクチャ
+- System Architecture
 
 ![img](./docs/img/test-enjou-system-architecture.png)
