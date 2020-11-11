@@ -4,4 +4,4 @@ AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Fi
 
 - システムアーキテクチャ
 
-![img](../test-enjou-system-architecture.png)
+![img](./docs/img/test-enjou-system-architecture.png)
