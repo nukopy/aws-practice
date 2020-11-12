@@ -20,7 +20,7 @@ AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Fi
 ### 準備
 
 - Lambda の Deploy Package の zip 用の S3 バケットを作成しておく
-  - `deploy` を渡さないと変更セットの作成で止まる
+  - 引数 `deploy` を渡さない場合，変更セットの作成で止まる
 
 ```sh
 sh create-bucket-for-lambda-deploy-packages.sh deploy
@@ -36,6 +36,7 @@ sh upload-lambda-deploy-packages.sh
 ```
 
 - ETL タスクのスタックの作成
+  - 引数 `deploy` を渡さない場合，変更セットの作成で止まる
 
 ```sh
 sh deploy.sh deploy
