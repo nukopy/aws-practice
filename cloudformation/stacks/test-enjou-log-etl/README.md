@@ -1,10 +1,10 @@
 # test-enjou
 
-AWS CloudFormation でログを処理する ETL タスクのリソースの定義
+AWS CloudFormation を用いて，ログを処理する ETL タスクのためのリソースのプロビジョニングを行う．
 
 ## システムアーキテクチャ
 
-- 目的のリソース群
+- ETL タスクの流れ
 
 ```txt
 AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Firehose -> S3
