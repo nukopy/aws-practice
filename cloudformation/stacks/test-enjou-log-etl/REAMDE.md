@@ -1,5 +1,20 @@
 # test-enjou
 
+AWS CloudFormation でログを処理する ETL タスクのリソースの定義
+
+## システムアーキテクチャ
+
+- 目的のリソース群
+
+```txt
+AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Firehose -> S3
+```
+
+- システムアーキテクチャ
+
+![img](./docs/img/test-enjou-system-architecture.png)
+
+
 ## デプロイ
 
 ### 準備
