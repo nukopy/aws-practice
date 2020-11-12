@@ -301,6 +301,7 @@ AWS CloudFormation は Amazon EC2 作成インスタンス API を呼び出し�
 ![img](./img/create-stack-diagram.png)
 
 1. AWS CloudFormation テンプレート（JSON または YAML 形式のテキストファイル）は，「[AWS CloudFormation デザイナー](https://console.aws.amazon.com/cloudformation/designer)」で設計することも，テキストエディタで記述することもできる．用意されたテンプレートを使用することもできる．**テンプレートは必要なリソースとその設定を記述する**．例えば，EC2 インスタンスを作成するとする．テンプレートは次の例のように EC2 インスタンスを宣言してそのプロパティを記述するものになる．
+
    - ex) `template.json`
 
      ```json
@@ -334,7 +335,7 @@ AWS CloudFormation は Amazon EC2 作成インスタンス API を呼び出し�
 
 2. テンプレートをローカルまたは S3 バケットに保存する．テンプレートを作成した場合は，`.json`，`.yml`，または `.txt` などのファイル拡張子を使用して保存する．
 3. テンプレートのファイルの場所（ローカルコンピュータのパスや Amazon S3 の URL など）を指定し，AWS CloudFormation スタックを作成する．テンプレートにパラメーターが含まれる場合は，スタック作成時に入力値を指定できる．パラメーターを使用してテンプレートに値を渡すことで，スタックを作成するたびにリソースをカスタマイズできる．
-AWS CloudFormation コンソール，API，または AWS CLI を使用してスタックを作成できる．
+   AWS CloudFormation コンソール，API，または AWS CLI を使用してスタックを作成できる．
    - **注記**
      - ローカルに保存されたテンプレートファイルを指定する場合，AWS CloudFormation はそれを AWS アカウントの S3 バケットにアップロードする．AWS CloudFormation は各リージョンにテンプレートファイルをアップロードするバケットを作成する．AWS アカウントの Amazon Simple Storage Service（Amazon S3）アクセス権限があれば誰でもこのバケットにアクセスできる．AWS CloudFormation が作成したバケットが既に存在する場合は，テンプレートはそのバケットに追加される（**どういう影響があるのかまだ分かってない**）．
      - 手動でテンプレートを Amazon S3 にアップロードすることで，独自のバケットを使用してアクセス権限を管理できる．その場合は，スタックを作成または更新するたびに，テンプレートファイルの Amazon S3 URL を指定する．
@@ -401,3 +402,134 @@ AWS CloudFormation を使用する前に，どの IAM のアクセス権限が�
   - AWS CloudFormation のクォータ
   - AWS CloudFormation エンドポイント
   - AWS CloudFormation の VPC エンドポイントの設定
+
+### AWS アカウントへのサインアップと料金
+
+AWS アカウントにサインアップした後，以下のインターフェースから AWS CloudFormation を使用できる．
+
+- AWS マネジメントコンソール
+- AWS CloudFormation API
+- AWS CLI
+
+#### 料金表
+
+AWS CloudFormation は無料のサービスで
+ある．
+ただし，スタックに追加する AWS リソースには現在の料金が課金される．
+AWS の料金に関する詳細は，http://aws.amazon.com/ の各製品の詳細ページを参照．
+
+---
+
+### AWS CloudFormation quotas
+
+- 公式 doc：[AWS CloudFormation quotas](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html)
+- **quotas**，クォータ
+  - CloudFormation におけるリソースの制限のこと
+  - テンプレートのサイズ上限や，パラメータの数など，スタックに指定できるリソースサイズが予め決められている．
+
+AWS アカウントには AWS CloudFormation のクォータがあり，テンプレートを記述したりスタックを作成する際に知っておく必要があるかもしれない．これらのクォータを理解することで，テンプレートやスタックの再設計が必要になるような制限エラーを回避することができる．
+
+- AWS CloudFormation quotas
+  - 制限に引っかかったときに参照すれば良い
+  - 公式 doc：[AWS CloudFormation quotas](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/cloudformation-limits.html)
+
+### AWS CloudFormation エンドポイント
+
+アプリケーションのデータレイテンシーを短縮するために，ほとんどのアマゾン​ウェブ​サービス製品でリージョンのエンドポイントを選択してリクエストを行うことができる．エンドポイントは，ウェブサービスのエントリポイントとなる URL である．
+
+コマンドラインインターフェイスまたは API アクションを使用してスタックを操作するときは，リージョンエンドポイントを指定できる．AWS CloudFormation のリージョンおよびエンドポイントの詳細については，『アマゾン ウェブ サービス全般のリファレンス』の「[AWS サービスエンドポイント](https://docs.aws.amazon.com/ja_jp/general/latest/gr/rande.html#cfn_region)」を参照．
+
+---
+
+## hoge
+
+---
+
+## AWS CloudFormation - API Reference
+
+AWS CloudFormation を利用することで，AWS インフラストラクチャのデプロイメントを，ユーザの予測通りに繰り返し作成・管理することができる．AWS CloudFormation を利用して，
+
+- Amazon Elastic Compute Cloud（EC2）
+- Amazon Elastic Block Store（EBS）
+- Amazon Simple Notification Service（SNS）
+- Elastic Load Balancing（ELB）
+- Auto Scaling
+
+などの AWS 製品を活用することで，基盤となる AWS インフラストラクチャを作成したり設定したりすることなく，信頼性が高く，拡張性が高く，費用対効果の高いアプリケーションを構築することができる．
+
+**AWS CloudFormation では，全てのリソースと依存関係をテンプレートファイルで宣言する**．テンプレートファイルは，リソースの集合体をスタックと呼ばれる 1 つのユニットとして定義する．AWS CloudFormation は，スタックの全てのメンバーであるリソースをまとめて作成・削除し，リソース間の依存関係を全て管理する．
+
+Amazon CloudFormation は他の AWS 製品を利用している．特定の AWS 製品に関する追加の技術情報が必要な場合は，その製品の技術ドキュメントを docs.aws.amazon.com で見ることができます。
+
+- スタック stack
+  - AWS CloudFormation で管理するリソース群の単位
+  - 噛み砕いていうと，スタックは複数の AWS リソースのプロビジョニング・運用の設定群であると言って良い
+  - **スタック内の全てのリソースは，スタックの AWS CloudFormation テンプレートによって定義される**
+
+### 「スタック」のための API
+
+AWS CloudFormation を利用すると，関連するリソースをスタックと呼ばれる 1 つの単位として管理する．スタックを作成，更新，削除することで，リソースの集合体を作成，更新，削除する．スタック内の全てのリソースは，スタックの AWS CloudFormation テンプレートによって定義される．
+
+- Actions
+  - ...
+- Data Types
+  - ...
+
+### 「変更セット」のための API
+
+スタック内の実行中のリソースに変更を加える必要がある場合は，スタックを更新する．
+リソースに変更を加える前に，提案された変更の概要である「変更セット（change set）」を生成することができる．
+変更セットを使用すると，変更が実行中のリソース，特に重要なリソースにどのような影響を与えるかを，実装する前に確認することができる．
+
+- Actions
+  - ...
+- Data Types
+  - ...
+
+### 「StackSets（スタックセット）」のための API
+
+AWS CloudFormation StackSets により，スタックのコレクションを作成することができる．
+AWS CloudFormation StackSets は，複数のアカウントおよびリージョンのスタックを 1 度のオペレーションで，作成・更新・削除できるようにすることで，**スタックの機能を拡張する**．管理者アカウントを使用して，AWS CloudFormation テンプレートを定義および管理し，指定のリージョンの選択されたターゲットアカウントにスタックをプロビジョニングする基盤としてテンプレートを使用する．**要は 1 つのテンプレートから複数アカウント，複数リージョンにスタックをプロピジョニングできる**．
+
+- StackSets
+  - Stack 1
+  - Stack 2
+  - ...
+
+StackSet は，1 つの AWS CloudFormation テンプレートから，複数の AWS アカウント，複数のリージョンにまたがる AWS リソースの共通のセット（**共通のセットってなんだよ**）を自動的かつ安全にプロピジョニングできる．
+1 つの StackSet を作成すると，AWS CloudFormation はテンプレートファイルとパラメータを使って，特定のアカウントやリージョンそれぞれにスタックをプロピジョニングする．スタックセットを利用することで，1 つの命令で，選択したアカウントやリージョンのおいて，AWS リソースの共通セットを管理することができる．
+
+- Actions
+  - ...
+- Data Types
+  - ...
+
+### 「registering types」のための API
+
+- CloudFormation におけるレジストリー
+  - CloudFormation のテンプレート内で利用できるリソースのタイプ
+  - AWS リソースに限らず，外部のリソース（サードパーティ製の監視 SaaS など）を CloudFormation に登録しておくことで，テンプレート内でそのリソースを選択できるようになる（スタックに組み込める）
+
+CloudFormation のレジストリには，CloudFormation アカウントで利用できるプライベートとパブリック（AWS）の両方のリソースがリストアップされている．自分で開発したものでも，自分で共有したものでも，プライベートなリソース・プロバイダーを利用するには，まず，それらを利用したいアカウントとリージョンで CloudFormation に登録する必要がある．
+
+例えば，以下は New Relic をレジスターに登録するためのコマンドである．
+
+- 参考
+  - Classmethod：[[新機能] CFn がサードパーティリソースをサポートしたので New Relic のアラートを設定してみた #newrelic](https://dev.classmethod.jp/articles/201911-new-feature-cfn-third-party-support-newrelic/)
+
+```sh
+aws cloudformation register-type \
+    --region ap-northeast-1 \
+    --type-name NewRelic::Alerts::NrqlAlert \
+    --schema-handler-package \
+        s3://nr-cloudformation-downloads/newrelic-alerts-nrqlalert.zip \
+    --type RESOURCE
+```
+
+---
+
+## AWS CloudFormation のベストプラクティス
+
+- Q. スタック内で作成できるリソースの数に制限はありますか？
+  - A. ベストプラクティスとして，小規模なテンプレートとスタックを作成し，複数のスタック間でアプリケーションをモジュール化することをお勧めする．大規模なグループよりも小規模なグループの方が依存関係が複雑でないため，このようにすることで，リソース変更に伴う影響範囲を最小限に抑えることができ，複数のリソース間の依存関係に関する問題をより素早く解決できる．
+  - CloudFormation のベストプラクティスとして小規模なテンプレート利用が推奨されているが，1 つのテンプレートで完結する方が管理上望ましい場合もある．ユースケースに応じた適切な利用を試すと良い．
