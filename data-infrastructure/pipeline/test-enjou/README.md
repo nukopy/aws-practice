@@ -2,7 +2,7 @@
 
 AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Firehose -> S3
 
-- System Architecture
+## システムアーキテクチャ
 
 ![img](./docs/img/test-enjou-system-architecture.png)
 
@@ -14,9 +14,12 @@ TODO: いろいろ整ってからで良い
 
 - **AWS Lambda**
   - `test-enjou-cloudwatch-logs-to-s3`
-    - パイプラインのデバッグを楽にするために作成した
+    - デバッグでログを流す用に作成した関数
       - Lambda のコンソールのテストからすぐにログを流せる
     - サブスクリプションフィルタに登録するロググループを作る
+    - 実際には，この Lambda 関数はログを吐ける任意の AWS リソースに置き換えることができる．今回は，ただ単にデバッグするための準備が楽だから Lambda を利用している
+      - Lambda ロググループを自動で作成してくれる（Lambda を使えば CloudWatch Logs 周りの設定をしなくて良い）
+      - コンソールから「テスト」を実行すればログを吐くことができ，サブスクリプションフィルタ経由で ETL タスクが動いてくれる
   - `test-enjou-cloud-watch-logs-to-s3-firehose-transformation`
     - Firehose 上でログを整形するための関数
       - メタデータの除去
@@ -49,3 +52,15 @@ TODO: いろいろ整ってからで良い
       - Lambda 関数 `test-enjou-s3-to-s3-avro-transformation` により，このバケットに Avro 形式のファイルが吐かれる
 - **IAM**
   - TODO: 各サービスがどのサービスへのアクセス権限があるかというのを定義するための色んなロール，ポリシーが必要になる
+
+## ETL タスクのデバッグ
+
+ETL タスクのデバッグを行いたい時は，Lambda 関数 `test-enjou-cloudwatch-logs-to-s3` のコンソールから「テスト」を実行すれば，ログを処理する ETL のプロセスが走るようになっている．
+
+ETL のアウトプット先は以下の S3 バケット：
+
+- S3 バケット
+  - `test-enjou-cloudwatch-logs-to-s3`
+    - JSON-line 形式のログファイル用のバケット
+  - `test-enjou-cloudwatch-logs-to-s3-avro`
+    - JSON-line 形式のログファイルを Avro 形式に変換したファイル用のバケット
