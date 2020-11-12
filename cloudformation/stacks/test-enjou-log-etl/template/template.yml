@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Stack for ETL task of "Enjou"
+Parameters:
+  Prefix:
+    Type: String
+    Description: Prefix name of resources like "test-enjou-cfn"
+  LambdaCodeDirectory:
+    Type: String
+    Default: "src/lambda_functions"
+Resources:
+  # IAM
+  RoleLambdaEntryPoint:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: !Sub '${Prefix}-role-lambda-entry-point'
+  # AWS Lambda
+  LambdaEntryPoint:
+    Type: AWS::Lambda::Function
+    Properties:
+      Role: !GetAtt RoleLambdaEntryPoint.Arn
+      Code: 'src/lambda_functions/entry-point'
+      FunctionName: !Join
+        - "-"
+        - - !Ref Prefix
+          - "entry-point"
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      MemorySize: 256
+      Timeout: 60
+  # LambdaFunc2:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Code: !Join
+  #       - '/'
+  #       - - !Ref LambdaCodeDirectory
+  #         - 'entry-point'
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Prefix
+  #         - 'entry-point'
+  # LambdaFunc2:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Code: !Join
+  #       - '/'
+  #       - - !Ref LambdaCodeDirectory
+  #         - 'entry-point'
+  #     FunctionName: !Join
+  #       - '-'
+  #       - - !Ref Prefix
+  #         - 'entry-point'
+  # Amazon CloudWatch Logs
+  # Log1:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Tags:
+  #     - Key: Name
+  #       Value: FirstVPC-IGW
+  # AWS S3 bucket
+  Bucket1:
+    Type: "AWS::S3::Bucket"
+    # Properties:
+    #   Tags:
+    #   - Key: Name
+    #     Value: FirstVPC-IGW
+  # Bucket2:
+  #   Type: AWS::EC2::InternetGateway
+  #   Properties:
+  #     Tags:
+  #     - Key: Name
+  #       Value: FirstVPC-IGW
+  # Amazon Kinesis Data Firehose
+  # DeliveryStream1:
+  #   Type: AWS::EC2::InternetGateway
+  #   Properties:
+  #     Tags:
+  #     - Key: Name
+  #       Value: FirstVPC-IGW

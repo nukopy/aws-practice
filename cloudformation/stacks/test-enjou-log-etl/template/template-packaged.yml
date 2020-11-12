@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack for ETL task of "Enjou"
+Parameters:
+  Prefix:
+    Type: String
+    Description: Prefix name of resources like "test-enjou-cfn"
+  LambdaCodeDirectory:
+    Type: String
+    Default: src/lambda_functions
+Resources:
+  RoleLambdaEntryPoint:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName:
+        Fn::Sub: ${Prefix}-role-lambda-entry-point
+  LambdaEntryPoint:
+    Type: AWS::Lambda::Function
+    Properties:
+      Role:
+        Fn::GetAtt:
+        - RoleLambdaEntryPoint
+        - Arn
+      Code:
+        S3Bucket: test-enjou-cfn-lambda-deploy-packages
+        S3Key: 28c4fa481b6f5b20f0c32cc30a62705d
+      FunctionName:
+        Fn::Join:
+        - '-'
+        - - Ref: Prefix
+          - entry-point
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      MemorySize: 256
+      Timeout: 60
+  Bucket1:
+    Type: AWS::S3::Bucket
