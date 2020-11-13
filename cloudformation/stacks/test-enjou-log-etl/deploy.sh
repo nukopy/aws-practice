@@ -1,20 +1,24 @@
 #!/bin/bash
 
 # variables
-Prefix="test-enjou-cfn"
-BUCKET_NAME="${Prefix}-lambda-deploy-packages"
-CFN_TEMPLATE="./template.yml"
-CFN_TEMPLATE_PACKAGED="./template-packaged.yml"
-CFN_STACK_NAME="test-lambda-cwl"
-CHANGESET_OPTION=""
-CFN_TEMPLATE="./template/template-packaged.yml"
 CFN_STACK_NAME="test-enjou-log-etl"
+Prefix="${CFN_STACK_NAME}-cfn"
+BUCKET_NAME="${Prefix}-s3-bucket-lambda-deploy-packages"
+CFN_TEMPLATE="./template/template.yml"
+CFN_TEMPLATE_PACKAGED="./template/template-packaged.yml"
+# CFN_TEMPLATE="./templates/template.yml"
+# CFN_TEMPLATE_PACKAGED="./templates/template-packaged.yml"
+CHANGESET_OPTION=""
 
 # upload Lambda deploy packages to S3
+echo "Uploading Lambda deploy packages..."
+
 aws cloudformation package \
   --template-file "${CFN_TEMPLATE}" \
   --s3-bucket "${BUCKET_NAME}" \
   --output-template-file ${CFN_TEMPLATE_PACKAGED}
+
+echo "Done."
 
 # deploy
 CHANGESET_OPTION="--no-execute-changeset"
