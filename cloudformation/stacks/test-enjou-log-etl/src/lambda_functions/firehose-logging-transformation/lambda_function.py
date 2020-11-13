@@ -15,7 +15,7 @@ def func_logger(func: Callable):
         # logger.info("===== Start function =====")
         # logger.info(f"Recieved event: {json.dumps(event, indent=2)}")
         print("===== Start function =====")
-        print(f"Recieved event: {json.dumps(event, indent=2)}")
+        print("Recieved event:\n", json.dumps(event))
         print(event)
         res = func(event, context)
         print("===== End function =====")
