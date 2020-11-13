@@ -10,9 +10,9 @@ Resources:
   ##############################
 
   PolicyLambdaBasicExecution:
-    Type: AWS::IAM::ManagedPolicy
+    Type: AWS::IAM::Policy
     Properties:
-      ManagedPolicyName: !Sub "${Prefix}-policy-lambda-basic-execution"
+      PolicyName: !Sub "${Prefix}-policy-lambda-basic-execution"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -27,11 +27,58 @@ Resources:
         - !Ref RoleLambdaFirehoseTransformation
         - !Ref RoleLambdaS3AvroTransformation
 
-  PolicyS3ReadWrite:
+  PolicyS3FullAccess:
     # https://console.aws.amazon.com/iam/home#/roles/firehose-to-s3
-    Type: AWS::IAM::ManagedPolicy
+    Type: AWS::IAM::Policy
     Properties:
-      ManagedPolicyName: !Sub "${Prefix}-policy-s3-read-write"
+      PolicyName: !Sub "${Prefix}-policy-s3-read-write"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: "s3:*"
+            Resource: "*"
+      Roles:
+        - !Ref RoleLambdaS3AvroTransformation
+  
+  PolicyFirehoseAccess:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${Prefix}-policy-lambda-basic-execution"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "firehose:*"
+            Resource: !Join
+              - ""
+              - - "arn:aws:firehose:"
+                - !Ref "AWS::Region"
+                - ":"
+                - !Ref "AWS::AccountId"
+                - ":*"
+      Roles:
+        - !Ref RoleSubscriptionFilter
+  
+  PolicyLambdaAccess:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${Prefix}-policy-lambda-basic-execution"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "lambda:InvokeFunction"
+            Resource: "*"  # TODO: 特定の Lambda を指定する
+      Roles:
+        - !Ref RoleFirehoseDeliveryStream
+
+  PolicyFirehoseDeliveryStreamS3Access:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub "${Prefix}-policy-firehose-delivery-stream-s3-access"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -43,19 +90,18 @@ Resources:
               - s3:ListBucket
               - s3:ListBucketMultipartUploads
               - s3:PutObject
-            Resource: "*"
-              # TODO: あとでアクセスできるリソースごとのロールに切り分ける
-              # - !Join
-              #   - ""
-              #   - - "arn:aws:s3:::"
-              #     - !Ref BucketLogging
-              # - !Join
-              #   - ""
-              #   - - "arn:aws:s3:::"
-              #     - !Ref BucketLogging
-              #     - "*"
+            Resource:
+              - !Join
+                - ""
+                - - "arn:aws:s3:::"
+                  - !Ref BucketLogging
+              - !Join
+                - ""
+                - - "arn:aws:s3:::"
+                  - !Ref BucketLogging
+                  - "*"
       Roles:
-        - !Ref RoleLambdaS3AvroTransformation
+        - !Ref RoleSubscriptionFilter
         - !Ref RoleFirehoseDeliveryStream
 
   ##############################
@@ -73,7 +119,7 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
-  
+
   RoleLambdaFirehoseTransformation:
     Type: AWS::IAM::Role
     Properties:
@@ -96,6 +142,19 @@ Resources:
           - Effect: Allow
             Principal:
               Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  RoleSubscriptionFilter:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${Prefix}-role-subscription-filter"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        # Version: "2008-10-17" これなんでバージョン違うん？
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: logs.ap-northeast-1.amazonaws.com
             Action: sts:AssumeRole
 
   RoleFirehoseDeliveryStream:
@@ -170,6 +229,33 @@ Resources:
       Timeout: 60
 
   ##############################
+  # CloudWatch Logs
+  ##############################
+
+  # LogGroup
+  LogGroupLambdaEntryPoint:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join
+        - ""
+        - - "/aws/lambda/"
+          - !Ref LambdaEntryPoint
+      RetentionInDays: 3653 # 省略時，ログの期限切れなし cf: https://docs.aws.amazon.com/ja_jp/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
+
+  # SubscriptionFilter
+  SubscriptionFilterLogging:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      RoleArn: !GetAtt
+        - RoleSubscriptionFilter
+        - Arn
+      DestinationArn: !GetAtt
+        - DeliveryStreamLogging
+        - Arn
+      LogGroupName: !Ref LogGroupLambdaEntryPoint
+      FilterPattern: "" # TODO: "" は全てのログを DestinationArn へ流す．フィルタリングの設定で JSON だけとか "INFO" だけを抽出できる．
+
+  ##############################
   # S3 bucket
   ##############################
 
@@ -177,6 +263,7 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "${Prefix}-s3-bucket-logging"
+
   BucketLoggingAvro:
     Type: "AWS::S3::Bucket"
     Properties:
@@ -189,12 +276,7 @@ Resources:
   DeliveryStreamLogging:
     Type: AWS::KinesisFirehose::DeliveryStream
     DependsOn:
-      - PolicyS3ReadWrite  # TODO: ロールの切り分け
-      - LambdaEntryPoint
-      # TODO: - 本当は Lambda じゃなく，CloudWatch Logs を指定したい
-      # 現在のログのソースは Lambda だから良いけど，実際は多様なリソース -> CWL となるから，
-      # CWL を間に挟める練習をしておかないとだめ！！（自動生成のロググループに頼らず，自分で作れるようになれってこと！）
-      # TODO: そんで CloudWatch Logs をログを吐くリソースに依存させたい
+      - PolicyS3FullAccess
     Properties:
       DeliveryStreamName: !Sub "${Prefix}-firehose-delivery-stream-logging"
       DeliveryStreamType: DirectPut
@@ -202,11 +284,11 @@ Resources:
         RoleARN: !GetAtt
           - RoleFirehoseDeliveryStream
           - Arn
-        BucketARN: !Join 
+        BucketARN: !Join
           - ""
           - - "arn:aws:s3:::"
-            - !Ref BucketLogging  # S3 バケットとの関連付け
-        BufferingHints:  # バッファリングの制限
+            - !Ref BucketLogging # S3 バケットとの関連付け
+        BufferingHints: # バッファリングの制限
           IntervalInSeconds: 60
           SizeInMBs: 5
         CompressionFormat: UNCOMPRESSED
@@ -214,13 +296,12 @@ Resources:
         ProcessingConfiguration:
           Enabled: true
           Processors:
-            - Type: Lambda 
+            - Type: Lambda
               Parameters:
                 - ParameterName: LambdaArn
                   ParameterValue: !GetAtt
                     - LambdaFirehoseLoggingTransformation
-                    - Arn 
-              
+                    - Arn
         CloudWatchLoggingOptions:
           Enabled: true
           LogGroupName: !Join
