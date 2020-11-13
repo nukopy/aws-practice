@@ -1,20 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Stack for ETL task of "Enjou"
 Parameters:
-  IAMUser:
-    Type: String
-    Default: y.okuwaki@jxpress.net
-  IAMUserID:
-    Type: String
-    Default: 489089015667
   Prefix:
     Type: String
     Description: Prefix name of resources like "test-enjou-cfn"
-Conditions:
-  CondtionFirehoseAssumeRole:
-    Fn::Equals:
-    - sts:ExternalId
-    - Ref: IAMUserID
 Resources:
   PolicyLambdaBasicExecution:
     Type: AWS::IAM::ManagedPolicy
@@ -30,11 +19,12 @@ Resources:
           - logs:CreateLogStream
           - logs:PutLogEvents
           Resource: '*'
-      Users:
-      - Ref: IAMUser
+      Roles:
+      - Ref: RoleLambdaEntryPoint
+      - Ref: RoleLambdaFirehoseTransformation
+      - Ref: RoleLambdaS3AvroTransformation
   PolicyS3ReadWrite:
     Type: AWS::IAM::ManagedPolicy
-    DependsOn: BucketLogging
     Properties:
       ManagedPolicyName:
         Fn::Sub: ${Prefix}-policy-s3-read-write
@@ -50,8 +40,9 @@ Resources:
           - s3:ListBucketMultipartUploads
           - s3:PutObject
           Resource: '*'
-      Users:
-      - Ref: IAMUser
+      Roles:
+      - Ref: RoleLambdaS3AvroTransformation
+      - Ref: RoleFirehoseDeliveryStream
   RoleLambdaEntryPoint:
     Type: AWS::IAM::Role
     Properties:
@@ -64,8 +55,6 @@ Resources:
           Principal:
             Service: lambda.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns:
-      - Ref: PolicyLambdaBasicExecution
   RoleLambdaFirehoseTransformation:
     Type: AWS::IAM::Role
     Properties:
@@ -78,13 +67,11 @@ Resources:
           Principal:
             Service: lambda.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns:
-      - Ref: PolicyLambdaBasicExecution
   RoleLambdaS3AvroTransformation:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
-        Fn::Sub: ${Prefix}-role-s3-avro-transformation
+        Fn::Sub: ${Prefix}-role-lambda-s3-avro-transformation
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -92,15 +79,11 @@ Resources:
           Principal:
             Service: lambda.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns:
-      - Ref: PolicyLambdaBasicExecution
-      - Ref: PolicyS3ReadWrite
   RoleFirehoseDeliveryStream:
     Type: AWS::IAM::Role
-    Condition: CondtionFirehoseAssumeRole
     Properties:
       RoleName:
-        Fn::Sub: '${Prefix}-role-firehose-delivery-stream:'
+        Fn::Sub: ${Prefix}-role-firehose-delivery-stream
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -108,8 +91,10 @@ Resources:
           Principal:
             Service: firehose.amazonaws.com
           Action: sts:AssumeRole
-      ManagedPolicyArns:
-      - Ref: PolicyS3ReadWrite
+          Condition:
+            StringEquals:
+              sts:ExternalId:
+                Ref: AWS::AccountId
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
@@ -180,3 +165,46 @@ Resources:
     Properties:
       BucketName:
         Fn::Sub: ${Prefix}-s3-bucket-logging-avro
+  DeliveryStreamLogging:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    DependsOn:
+    - PolicyS3ReadWrite
+    - LambdaEntryPoint
+    Properties:
+      DeliveryStreamName:
+        Fn::Sub: ${Prefix}-firehose-delivery-stream-logging
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN:
+          Fn::GetAtt:
+          - RoleFirehoseDeliveryStream
+          - Arn
+        BucketARN:
+          Fn::Join:
+          - ''
+          - - 'arn:aws:s3:::'
+            - Ref: BucketLogging
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 5
+        CompressionFormat: UNCOMPRESSED
+        Prefix: firehose/
+        ProcessingConfiguration:
+          Enabled: true
+          Processors:
+          - Type: Lambda
+            Parameters:
+            - ParameterName: LambdaArn
+              ParameterValue:
+                Fn::GetAtt:
+                - LambdaFirehoseLoggingTransformation
+                - Arn
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName:
+            Fn::Join:
+            - ''
+            - - /aws/kinesisfirehose/
+              - Fn::Sub: ${Prefix}-firehose-delivery-stream-logging
+          LogStreamName:
+            Fn::Sub: ${Prefix}-cloudwatch-logs-firehose-delivery-stream-logging

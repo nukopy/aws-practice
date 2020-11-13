@@ -1,21 +1,14 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Stack for ETL task of "Enjou"
 Parameters:
-  IAMUser:
-    Type: String
-    Default: y.okuwaki@jxpress.net
-  IAMUserID:
-    Type: String
-    Default: 489089015667
   Prefix:
     Type: String
     Description: Prefix name of resources like "test-enjou-cfn"
-Conditions:
-  CondtionFirehoseAssumeRole: !Equals
-    - "sts:ExternalId"
-    - !Ref IAMUserID
 Resources:
+  ##############################
   # IAM Policy
+  ##############################
+
   PolicyLambdaBasicExecution:
     Type: AWS::IAM::ManagedPolicy
     Properties:
@@ -29,13 +22,14 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: "*"
-      Users:
-        - !Ref IAMUser
+      Roles:
+        - !Ref RoleLambdaEntryPoint
+        - !Ref RoleLambdaFirehoseTransformation
+        - !Ref RoleLambdaS3AvroTransformation
 
   PolicyS3ReadWrite:
     # https://console.aws.amazon.com/iam/home#/roles/firehose-to-s3
     Type: AWS::IAM::ManagedPolicy
-    DependsOn: BucketLogging
     Properties:
       ManagedPolicyName: !Sub "${Prefix}-policy-s3-read-write"
       PolicyDocument:
@@ -50,12 +44,24 @@ Resources:
               - s3:ListBucketMultipartUploads
               - s3:PutObject
             Resource: "*"
-              # - arn:aws:s3:::test-enjou-cloudwatch-logs-to-s3
-              # - arn:aws:s3:::test-enjou-cloudwatch-logs-to-s3/*
-      Users:
-        - !Ref IAMUser
+              # TODO: あとでアクセスできるリソースごとのロールに切り分ける
+              # - !Join
+              #   - ""
+              #   - - "arn:aws:s3:::"
+              #     - !Ref BucketLogging
+              # - !Join
+              #   - ""
+              #   - - "arn:aws:s3:::"
+              #     - !Ref BucketLogging
+              #     - "*"
+      Roles:
+        - !Ref RoleLambdaS3AvroTransformation
+        - !Ref RoleFirehoseDeliveryStream
 
+  ##############################
   # IAM Role
+  ##############################
+
   RoleLambdaEntryPoint:
     Type: AWS::IAM::Role
     Properties:
@@ -67,8 +73,6 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - !Ref PolicyLambdaBasicExecution
   
   RoleLambdaFirehoseTransformation:
     Type: AWS::IAM::Role
@@ -81,13 +85,11 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - !Ref PolicyLambdaBasicExecution
 
   RoleLambdaS3AvroTransformation:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "${Prefix}-role-s3-avro-transformation"
+      RoleName: !Sub "${Prefix}-role-lambda-s3-avro-transformation"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -95,26 +97,26 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
             Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - !Ref PolicyLambdaBasicExecution
-        - !Ref PolicyS3ReadWrite
 
   RoleFirehoseDeliveryStream:
     Type: AWS::IAM::Role
-    Condition: CondtionFirehoseAssumeRole
     Properties:
-      RoleName: !Sub "${Prefix}-role-firehose-delivery-stream:"
+      RoleName: !Sub "${Prefix}-role-firehose-delivery-stream"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
               Service: firehose.amazonaws.com
-            Action: sts:AssumeRole
-      ManagedPolicyArns:
-        - !Ref PolicyS3ReadWrite
+            Action: "sts:AssumeRole"
+            Condition:
+              StringEquals:
+                "sts:ExternalId": !Ref "AWS::AccountId"
 
-  # AWS Lambda
+  ##############################
+  # Lambda functions
+  ##############################
+
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
@@ -166,25 +168,11 @@ Resources:
       Runtime: python3.8
       MemorySize: 256
       Timeout: 60
-  # LambdaFunc2:
-  #   Type: AWS::Lambda::Function
-  #   Properties:
-  #     Code: !Join
-  #       - '/'
-  #       - - !Ref LambdaCodeDirectory
-  #         - 'entry-point'
-  #     FunctionName: !Join
-  #       - '-'
-  #       - - !Ref Prefix
-  #         - 'entry-point'
-    # Amazon CloudWatch Logs
-    # Log1:
-    #   Type: AWS::Lambda::Function
-    #   Properties:
-    #     Tags:
-    #     - Key: Name
-    #       Value: FirstVPC-IGW
-  # AWS S3 bucket
+
+  ##############################
+  # S3 bucket
+  ##############################
+
   BucketLogging:
     Type: "AWS::S3::Bucket"
     Properties:
@@ -193,16 +181,50 @@ Resources:
     Type: "AWS::S3::Bucket"
     Properties:
       BucketName: !Sub "${Prefix}-s3-bucket-logging-avro"
-    # Bucket2:
-    #   Type: AWS::EC2::InternetGateway
-    #   Properties:
-    #     Tags:
-    #     - Key: Name
-    #       Value: FirstVPC-IGW
-    # Amazon Kinesis Data Firehose
-    # DeliveryStream1:
-    #   Type: AWS::EC2::InternetGateway
-    #   Properties:
-    #     Tags:
-    #     - Key: Name
-    #       Value: FirstVPC-IGW
+
+  ##############################
+  # Kinesis Data Firehose
+  ##############################
+
+  DeliveryStreamLogging:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    DependsOn:
+      - PolicyS3ReadWrite  # TODO: ロールの切り分け
+      - LambdaEntryPoint
+      # TODO: - 本当は Lambda じゃなく，CloudWatch Logs を指定したい
+      # 現在のログのソースは Lambda だから良いけど，実際は多様なリソース -> CWL となるから，
+      # CWL を間に挟める練習をしておかないとだめ！！（自動生成のロググループに頼らず，自分で作れるようになれってこと！）
+      # TODO: そんで CloudWatch Logs をログを吐くリソースに依存させたい
+    Properties:
+      DeliveryStreamName: !Sub "${Prefix}-firehose-delivery-stream-logging"
+      DeliveryStreamType: DirectPut
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt
+          - RoleFirehoseDeliveryStream
+          - Arn
+        BucketARN: !Join 
+          - ""
+          - - "arn:aws:s3:::"
+            - !Ref BucketLogging  # S3 バケットとの関連付け
+        BufferingHints:  # バッファリングの制限
+          IntervalInSeconds: 60
+          SizeInMBs: 5
+        CompressionFormat: UNCOMPRESSED
+        Prefix: firehose/
+        ProcessingConfiguration:
+          Enabled: true
+          Processors:
+            - Type: Lambda 
+              Parameters:
+                - ParameterName: LambdaArn
+                  ParameterValue: !GetAtt
+                    - LambdaFirehoseLoggingTransformation
+                    - Arn 
+              
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: !Join
+            - ""
+            - - "/aws/kinesisfirehose/"
+              - !Sub "${Prefix}-firehose-delivery-stream-logging"
+          LogStreamName: !Sub "${Prefix}-cloudwatch-logs-firehose-delivery-stream-logging"
