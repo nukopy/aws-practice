@@ -2,17 +2,21 @@
 
 AWS CloudFormation を用いて，ログを処理する ETL タスクのためのリソースのプロビジョニングを行う．
 
-## システムアーキテクチャ
+## インフラ構成
 
-- ETL タスクの流れ
+### ETL タスクの流れ
 
 ```txt
 AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Firehose -> S3
 ```
 
-- システムアーキテクチャ
+### システムアーキテクチャ
 
 ![img](./docs/img/test-enjou-system-architecture.png)
+
+### AWS リソース
+
+resouce prefix: `test-enjou-log-etl-cfn`
 
 ## デプロイ
 
