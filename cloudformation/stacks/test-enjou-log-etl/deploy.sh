@@ -4,11 +4,18 @@
 CFN_STACK_NAME="test-enjou-log-etl"
 Prefix="${CFN_STACK_NAME}-cfn"
 BUCKET_NAME="${Prefix}-s3-bucket-lambda-deploy-packages"
-CFN_TEMPLATE="./template/template.yml"
-CFN_TEMPLATE_PACKAGED="./template/template-packaged.yml"
-# CFN_TEMPLATE="./templates/template.yml"
-# CFN_TEMPLATE_PACKAGED="./templates/template-packaged.yml"
+CFN_TEMPLATE="./templates/template.yml"
+CFN_TEMPLATE_PACKAGED="./templates/template-packaged.yml"
 CHANGESET_OPTION=""
+
+# install Python dependencies
+echo "Creating the deploy package..."
+echo "PWD: $(pwd)"
+
+cd ./src/lambda_functions/firehose-logging-transformation
+pip install --target . python-snappy fastavro  # TODO: requirements.txt から取ってこれると良いかも
+cd ../../../
+echo "Done."
 
 # upload Lambda deploy packages to S3
 echo "Uploading Lambda deploy packages..."

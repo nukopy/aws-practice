@@ -7,7 +7,7 @@ if [ $# = 1 ] && [ $1 = "deploy" ]; then
   CHANGESET_OPTION=""
 fi
 
-CFN_TEMPLATE="./template/template-s3-bucket-for-lambda-deploy-packages.yml"
+CFN_TEMPLATE="./templates/template-s3-bucket-for-lambda-deploy-packages.yml"
 CFN_STACK_NAME="test-enjou-log-etl-cfn-s3-bucket-for-lambda-deploy-packages"
 
 # deploy
