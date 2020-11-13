@@ -1,0 +1,5 @@
+**
+
+!.gitignore
+!lambda_function.py
+!event.json
