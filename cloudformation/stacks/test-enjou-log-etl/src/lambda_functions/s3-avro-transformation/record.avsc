@@ -1,0 +1,9 @@
+{
+  "type": "record",
+  "namespace": "com.log",
+  "name": "Log",
+  "fields": [
+    { "name": "timestamp", "type": "int" },
+    { "name": "message", "type": "string" }
+  ]
+}
