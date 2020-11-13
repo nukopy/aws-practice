@@ -28,7 +28,7 @@ TODO: 一時的なバケットを作成して終わったらそれを消去す�
   - 引数 `deploy` を渡さない場合，変更セットの作成で止まる
 
 ```sh
-sh create-bucket-for-lambda-deploy-packages.sh deploy
+sh deploy-s3-bucket-for-lambda-deploy-packages.sh deploy
 ```
 
 ### スタックの作成
