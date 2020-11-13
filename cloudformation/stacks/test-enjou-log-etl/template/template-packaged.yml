@@ -1,16 +1,62 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Stack for ETL task of "Enjou"
 Parameters:
+  IAMUser:
+    Type: String
+    Default: y.okuwaki@jxpress.net
+  IAMUserID:
+    Type: String
+    Default: 489089015667
   Prefix:
     Type: String
     Description: Prefix name of resources like "test-enjou-cfn"
-  LambdaCodeDirectory:
-    Type: String
-    Default: src/lambda_functions
+Conditions:
+  CondtionFirehoseAssumeRole:
+    Fn::Equals:
+    - sts:ExternalId
+    - Ref: IAMUserID
 Resources:
+  PolicyLambdaBasicExecution:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: ${Prefix}-policy-lambda-basic-execution
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: '*'
+      Users:
+      - Ref: IAMUser
+  PolicyS3ReadWrite:
+    Type: AWS::IAM::ManagedPolicy
+    DependsOn: BucketLogging
+    Properties:
+      ManagedPolicyName:
+        Fn::Sub: ${Prefix}-policy-s3-read-write
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Action:
+          - s3:AbortMultipartUpload
+          - s3:GetBucketLocation
+          - s3:GetObject
+          - s3:ListBucket
+          - s3:ListBucketMultipartUploads
+          - s3:PutObject
+          Resource: '*'
+      Users:
+      - Ref: IAMUser
   RoleLambdaEntryPoint:
     Type: AWS::IAM::Role
     Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-lambda-entry-point
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -19,9 +65,51 @@ Resources:
             Service: lambda.amazonaws.com
           Action: sts:AssumeRole
       ManagedPolicyArns:
-      - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      - Ref: PolicyLambdaBasicExecution
+  RoleLambdaFirehoseTransformation:
+    Type: AWS::IAM::Role
+    Properties:
       RoleName:
-        Fn::Sub: ${Prefix}-role-lambda-entry-point
+        Fn::Sub: ${Prefix}-role-lambda-firehose-transformation
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - Ref: PolicyLambdaBasicExecution
+  RoleLambdaS3AvroTransformation:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-s3-avro-transformation
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - Ref: PolicyLambdaBasicExecution
+      - Ref: PolicyS3ReadWrite
+  RoleFirehoseDeliveryStream:
+    Type: AWS::IAM::Role
+    Condition: CondtionFirehoseAssumeRole
+    Properties:
+      RoleName:
+        Fn::Sub: '${Prefix}-role-firehose-delivery-stream:'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: firehose.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+      - Ref: PolicyS3ReadWrite
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
@@ -30,16 +118,65 @@ Resources:
         - RoleLambdaEntryPoint
         - Arn
       Code:
-        S3Bucket: test-enjou-cfn-lambda-deploy-packages
+        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
         S3Key: 28c4fa481b6f5b20f0c32cc30a62705d
       FunctionName:
         Fn::Join:
         - '-'
         - - Ref: Prefix
-          - entry-point
+          - lambda-entry-point
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
       MemorySize: 256
       Timeout: 60
-  Bucket1:
+  LambdaFirehoseLoggingTransformation:
+    Type: AWS::Lambda::Function
+    Properties:
+      Role:
+        Fn::GetAtt:
+        - RoleLambdaFirehoseTransformation
+        - Arn
+      Code:
+        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
+        S3Key: 960134c0ecfa1a86005395ea3f3aef51
+      FunctionName:
+        Fn::Join:
+        - '-'
+        - - Ref: Prefix
+          - lambda-firehose-logging-transformation
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      MemorySize: 256
+      Timeout: 60
+  LambdaS3AvroTransformation:
+    Type: AWS::Lambda::Function
+    DependsOn:
+    - BucketLogging
+    - BucketLoggingAvro
+    Properties:
+      Role:
+        Fn::GetAtt:
+        - RoleLambdaS3AvroTransformation
+        - Arn
+      Code:
+        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
+        S3Key: 57ada518e9b1367862e9e54a67403387
+      FunctionName:
+        Fn::Join:
+        - '-'
+        - - Ref: Prefix
+          - lambda-s3-avro-transformation
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.8
+      MemorySize: 256
+      Timeout: 60
+  BucketLogging:
     Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Sub: ${Prefix}-s3-bucket-logging
+  BucketLoggingAvro:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName:
+        Fn::Sub: ${Prefix}-s3-bucket-logging-avro
