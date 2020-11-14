@@ -139,7 +139,7 @@ Resources:
           - Effect: Allow
             Action:
               - "lambda:InvokeFunction"
-            Resource: "*"  # TODO: 特定の Lambda を指定する
+            Resource: "*"
       Roles:
         - !Ref RoleFirehoseDeliveryStream
 
