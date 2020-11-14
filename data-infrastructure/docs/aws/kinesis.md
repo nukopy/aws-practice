@@ -44,21 +44,16 @@ Amazon Kinesis Data Firehose では，最低料金やセットアップ費用は
 
 - 使いやすい
   - Amazon Kinesis Data Firehose は，AWS Management Console で数回クリックするだけで，ストリーミングデータのキャプチャ，変換，ロードを簡単に行う方法を提供する．Firehose の配信ストリームを素早く作成し，配信先を選択して，何十万ものデータソースからリアルタイムのデータを同時に送信し始めることができる．指定した間隔でデータを送信先に継続的にロードするために必要なスケーリング，シャーディング，モニタリングなど，ストリームの管理は全てこのサービスが行う．
-
 - AWS のサービスやサービスプロバイダとの統合
   - Amazon Kinesis Data Firehose は，Amazon S3，Amazon Redshift，Amazon Elasticsearch Service と統合されている．また，一般的な HTTP エンドポイントにデータを配信したり，Datadog，New Relic，MongoDB，Splunk などのサービスプロバイダに直接データを配信することもできる．AWS Management Console から、Kinesis Data Firehose を任意の配信先に向け、既存のアプリケーションやツールを使ってストリーミングデータの分析を行うことができます。
-
 - サーバーレスのデータ変換
-  Amazon Kinesis Data Firehose を使用すると、ストリーミングデータをデータストアにロードする前に準備することができます。Kinesis Data Firehose を使用すると、データソースからの生のストリーミングデータを、データストアが必要とする Apache Parquet や Apache ORC などの形式に簡単に変換することができ、独自のデータ処理パイプラインを構築する必要がありません。詳細はこちら "
-
+  - Amazon Kinesis Data Firehose を使用すると、ストリーミングデータをデータストアにロードする前に準備することができます。Kinesis Data Firehose を使用すると、データソースからの生のストリーミングデータを、データストアが必要とする Apache Parquet や Apache ORC などの形式に簡単に変換することができ、独自のデータ処理パイプラインを構築する必要がありません。詳細はこちら "
 - ニアリアルタイム
-  Amazon Kinesis Data Firehose は、ほぼリアルタイムでデータをキャプチャしてロードします。データがサービスに送信されてから 60 秒以内に新しいデータを目的地にロードします。その結果、より早く新しいデータにアクセスし、ビジネスや運用上のイベントに素早く対応することができます。
-
+  - Amazon Kinesis Data Firehose は、ほぼリアルタイムでデータをキャプチャしてロードします。データがサービスに送信されてから 60 秒以内に新しいデータを目的地にロードします。その結果、より早く新しいデータにアクセスし、ビジネスや運用上のイベントに素早く対応することができます。
 - 継続的な管理は不要
-  Amazon Kinesis Data Firehose は、ストリーミングデータの処理とロードに必要なコンピュート、メモリ、ネットワークリソースを自動的にプロビジョニング、管理、スケーリングする完全に管理されたサービスです。設定すると、Kinesis Data Firehose は、データストリームを配信先に継続的にロードします。
-
+  - Amazon Kinesis Data Firehose は、ストリーミングデータの処理とロードに必要なコンピュート、メモリ、ネットワークリソースを自動的にプロビジョニング、管理、スケーリングする完全に管理されたサービスです。設定すると、Kinesis Data Firehose は、データストリームを配信先に継続的にロードします。
 - 使用した分だけお支払い
-  Amazon Kinesis Data Firehose を利用すると、お客様は、サービスを通じて送信するデータ量、および該当する場合はデータ形式の変換にかかる費用のみを支払うことになります。また、Amazon VPC の配信と、該当する場合はデータ転送のための費用もお支払いいただきます。最低料金や前払いのコミットメントはありません。
+  - Amazon Kinesis Data Firehose を利用すると、お客様は、サービスを通じて送信するデータ量、および該当する場合はデータ形式の変換にかかる費用のみを支払うことになります。また、Amazon VPC の配信と、該当する場合はデータ転送のための費用もお支払いいただきます。最低料金や前払いのコミットメントはありません。
 
 ### Firehose の立ち上げ方
 
@@ -115,7 +110,6 @@ Lambda からの全ての変換されたレコードには，以下のパラメ�
 - `recordId`
   - レコード ID は，呼び出し時に Kinesis Data Firehose から Lambda に渡される．変換されたレコードには，同じレコード ID が含まれる必要がある．元のレコードの ID と変換されたレコードの ID との不一致は，データ変換失敗として扱われる．
   - つまり，**Lambda の event として送られてきたレコードのレコード ID は変換の前後で変わってはいけない**
-
 - `result`
   - レコードのデータ変換のステータス
   - 指定できる値は次のとおり：
@@ -158,7 +152,7 @@ Browse all applications を選択します。
 
 `CreateDeliveryStream` または `UpdateDestination` API を使用して，再試行オプションを指定または上書きできる．このタイプの失敗の場合，呼び出しエラーログを Amazon CloudWatch Logs に出力できる．詳細については，「CloudWatch Logs を使用した Kinesis Data Firehose のモニタリング」を参照．
 
-レコードのデータ変換のステータスが `ProcessingFailed` の場合，Kinesis Data Firehose はそのレコードを処理失敗として扱う．このタイプの失敗の場合，エラーログを Lambda 関数から Amazon CloudWatch Logs に出力できる．詳細については，AWS Lambda Developer Guideの「AWS Lambda の Amazon CloudWatch Logs へのアクセス」を参照．
+レコードのデータ変換のステータスが `ProcessingFailed` の場合，Kinesis Data Firehose はそのレコードを処理失敗として扱う．このタイプの失敗の場合，エラーログを Lambda 関数から Amazon CloudWatch Logs に出力できる．詳細については，AWS Lambda Developer Guide の「AWS Lambda の Amazon CloudWatch Logs へのアクセス」を参照．
 
 データ変換が失敗した場合，処理に失敗したレコードは S3 バケットの processing-failed フォルダに配信されます。レコードの形式は以下のとおり．
 
@@ -166,13 +160,13 @@ Browse all applications を選択します。
 
 ```json
 {
-    "attemptsMade": "count",
-    "arrivalTimestamp": "timestamp",
-    "errorCode": "code",
-    "errorMessage": "message",
-    "attemptEndingTimestamp": "timestamp",
-    "rawData": "data",
-    "lambdaArn": "arn"
+  "attemptsMade": "count",
+  "arrivalTimestamp": "timestamp",
+  "errorCode": "code",
+  "errorMessage": "message",
+  "attemptEndingTimestamp": "timestamp",
+  "rawData": "data",
+  "lambdaArn": "arn"
 }
 ```
 
