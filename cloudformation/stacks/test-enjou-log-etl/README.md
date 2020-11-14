@@ -96,7 +96,7 @@ sh utils/delete-stack [STACK NAME]  # スタックの消去
   - 以下 2 つの S3 バケットの中身を確認し，オブジェクトをローカルに保存する．`output` ディレクトリに，それぞれ `log`，`log.avro` というファイル名でダウンロードする
     - JSON-line 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging`
     - Avro 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging-avro`
-  - 以下のスクリプトで簡易的なテストを実行
+  - 以下のコマンドで簡易的なテストを実行
     - テスト項目
       - Avro 形式のファイルが読み込めるか
       - ログの圧縮処理の前後で内容が一致するか
