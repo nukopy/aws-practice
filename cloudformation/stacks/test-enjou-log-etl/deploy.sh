@@ -12,7 +12,7 @@ CHANGESET_OPTION=""
 echo "Creating the deploy package..."
 echo "PWD: $(pwd)"
 
-cd ./src/lambda_functions/firehose-logging-transformation
+cd ./src/lambda_functions/s3-avro-transformation
 pip install --target . python-snappy fastavro  # TODO: requirements.txt から取ってこれると良いかも
 cd ../../../
 echo "Done."
