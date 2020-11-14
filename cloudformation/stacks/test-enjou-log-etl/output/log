@@ -1,0 +1,4 @@
+{"timestamp": 1605347468570, "message": "{'TEST-MESSAGE': 'This is a test maessage.'}\n"}
+{"timestamp": 1605347468570, "message": "{\"key1\": \"value1\", \"key2\": \"value2\", \"key3\": \"value3\"}\n"}
+{"timestamp": 1605347469347, "message": "{'TEST-MESSAGE': 'This is a test maessage.'}\n"}
+{"timestamp": 1605347469347, "message": "{\"key1\": \"value1\", \"key2\": \"value2\", \"key3\": \"value3\"}\n"}
