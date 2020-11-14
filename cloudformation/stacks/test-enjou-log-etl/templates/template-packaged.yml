@@ -4,7 +4,76 @@ Parameters:
   Prefix:
     Type: String
     Description: Prefix name of resources like "test-enjou-cfn"
+    Default: test-enjou-log-etl-cfn
+  NameBucketLogging:
+    Type: String
+    Description: Bucket name of "BucketLoggingAvro" for resolve circular dependency
+    Default: test-enjou-log-etl-cfn-s3-bucket-logging
 Resources:
+  RoleLambdaEntryPoint:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-lambda-entry-point
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+  RoleLambdaFirehoseTransformation:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-lambda-firehose-transformation
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+  RoleLambdaS3AvroTransformation:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-lambda-s3-avro-transformation
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+  RoleSubscriptionFilter:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-subscription-filter
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: logs.ap-northeast-1.amazonaws.com
+          Action: sts:AssumeRole
+  RoleFirehoseDeliveryStream:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName:
+        Fn::Sub: ${Prefix}-role-firehose-delivery-stream
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: firehose.amazonaws.com
+          Action: sts:AssumeRole
+          Condition:
+            StringEquals:
+              sts:ExternalId:
+                Ref: AWS::AccountId
   PolicyLambdaBasicExecution:
     Type: AWS::IAM::Policy
     Properties:
@@ -100,70 +169,6 @@ Resources:
       Roles:
       - Ref: RoleSubscriptionFilter
       - Ref: RoleFirehoseDeliveryStream
-  RoleLambdaEntryPoint:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${Prefix}-role-lambda-entry-point
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
-  RoleLambdaFirehoseTransformation:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${Prefix}-role-lambda-firehose-transformation
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
-  RoleLambdaS3AvroTransformation:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${Prefix}-role-lambda-s3-avro-transformation
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
-  RoleSubscriptionFilter:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${Prefix}-role-subscription-filter
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: logs.ap-northeast-1.amazonaws.com
-          Action: sts:AssumeRole
-  RoleFirehoseDeliveryStream:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${Prefix}-role-firehose-delivery-stream
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: Allow
-          Principal:
-            Service: firehose.amazonaws.com
-          Action: sts:AssumeRole
-          Condition:
-            StringEquals:
-              sts:ExternalId:
-                Ref: AWS::AccountId
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
@@ -192,7 +197,7 @@ Resources:
         - Arn
       Code:
         S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
-        S3Key: cf9cdb1529aeb1fc1793a24f5d8f439d
+        S3Key: b98608ef726e3732bb9600f59aaac1d1
       FunctionName:
         Fn::Join:
         - '-'
@@ -204,9 +209,6 @@ Resources:
       Timeout: 60
   LambdaS3AvroTransformation:
     Type: AWS::Lambda::Function
-    DependsOn:
-    - BucketLogging
-    - BucketLoggingAvro
     Properties:
       Role:
         Fn::GetAtt:
@@ -214,7 +216,7 @@ Resources:
         - Arn
       Code:
         S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
-        S3Key: 96ff32a471391edff40ef02d76ec7e41
+        S3Key: 7b648755f2448b4a94331aa21fafc5f7
       FunctionName:
         Fn::Join:
         - '-'
@@ -224,6 +226,19 @@ Resources:
       Runtime: python3.8
       MemorySize: 256
       Timeout: 60
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - LambdaS3AvroTransformation
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount:
+        Ref: AWS::AccountId
+      SourceArn:
+        Fn::Sub: arn:aws:s3:::${NameBucketLogging}
   LogGroupLambdaEntryPoint:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -251,7 +266,14 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName:
-        Fn::Sub: ${Prefix}-s3-bucket-logging
+        Ref: NameBucketLogging
+      NotificationConfiguration:
+        LambdaConfigurations:
+        - Event: s3:ObjectCreated:*
+          Function:
+            Fn::GetAtt:
+            - LambdaS3AvroTransformation
+            - Arn
   BucketLoggingAvro:
     Type: AWS::S3::Bucket
     Properties:
