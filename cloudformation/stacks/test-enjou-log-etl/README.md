@@ -101,5 +101,5 @@ sh utils/delete-stack [STACK NAME]  # スタックの消去
       - ログの圧縮処理の前後で内容が一致するか
 
 ```sh
-python test_output.py
+pytest test_output.py
 ```
