@@ -66,47 +66,41 @@ sh deploy-s3-bucket-for-lambda-deploy-packages.sh deploy
 sh deploy.sh deploy
 ```
 
-- スタックの作成に失敗した場合
-  - スタック作成時のログを取得
-  - スタックの消去
-
-```sh
-sh utils/log.sh [STACK NAME]  # エラーログの出力
-sh utils/delete-stack [STACK NAME]  # スタックの消去
-```
-
 スクリプト内で行っているのは以下の 2 つの処理：
 
 - Lambda のデプロイパッケージのアップロード
   - 「準備」のセクションで作成した S3 バケットへ Lambda の deploy package をアップロードし，そのリソース ID を含んだテンプレートファイルを生成する
 - ETL タスクのスタックの作成
 
+#### スタック作成に失敗したとき
+
+スタックの作成に失敗した場合，コンソールでスタック作成時のログを確認し，スタックの消去を行う必要がある．
+ブラウザの方が見やすいが，CLI で確認したい場合，以下のコマンドを実行する．
+
+```sh
+# スタック作成時のログを確認
+# JSON 形式のログファイルで `CREATE_FAILED` を検索するスタック作成時のエラー原因が分かる
+sh utils/log.sh [STACK NAME]
+>>>>>>> b2a048b454d432be5faef200a7477071ecaa0902
+
+# スタックの消去（これをしないと同じ名前のスタックを新しく作成できない）
+sh utils/delete-stack [STACK NAME]  # スタックの消去
+```
+
 ### テスト
 
-ETL タスクのエントリーポイントである Lambda 関数 `lambda-entry-point` のコンソールへ移動し，「テスト」を何回か実行する．
-これにより，CloudWatch Logs へログが吐かれ，それをトリガーとしてログ処理の ETL タスクが動く．
-ETL タスクの結果は S3 バケットへ吐かれるが，Firehose のバッファリングの設定により，ログが S3 へ吐かれるまで数分かかる可能性がある．
-
-- テスト結果の確認
-  - JSON-line 形式のログとそれを Avro 形式に変換したログをそれぞれの S3 バケットからダウンロードする．ローカルの `output` ディレクトリにそれぞれ`output/log`，`output/log.avro` という名前でダウンロードする．
-  - ダウンロード後，以下のコマンドでテストを実行
-    - JSON-line 形式と Avro 形式のデータが一致するかのテスト
+- テストの手順
+  - ETL タスクのエントリーポイントである Lambda 関数 `lambda-entry-point` のコンソールへ移動し，「テスト」を何回か実行する
+    - この部分はログのソースとなるため，実際のプロダクトでは他のサービスに置き換わる可能性がある．ここでは，デバッグを楽にするために，Lambda 関数による CloudWatch Logs へのログ出力により，後続の ETL タスクが発火するようになっている
+    - **注意：ETL タスクの結果は S3 バケットへ吐かれるが，Firehose のバッファリングの設定により，ログが S3 へ吐かれるまで数分かかる可能性がある**
+  - 以下 2 つの S3 バケットの中身を確認し，オブジェクトをローカルに保存する．`output` ディレクトリに，それぞれ `log`，`log.avro` というファイル名でダウンロードする
+    - JSON-line 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging`
+    - Avro 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging-avro`
+  - 以下のスクリプトで簡易的なテストを実行
+    - テスト項目
+      - Avro 形式のファイルが読み込めるか
+      - ログの圧縮処理の前後で内容が一致するか
 
 ```sh
 pytest test_output.py
-```
-
-## メモ
-
-- CloudFormation 上の Stack の消去
-
-```sh
-sh utils/delete-stack [STACK NAME]
-```
-
-- スタックのエラーログの見方
-  - JSON 形式のログファイルから `CREATE_FAILED` を探すと原因が分かる
-
-```sh
-sh utils/log.sh [STACK NAME]
 ```
