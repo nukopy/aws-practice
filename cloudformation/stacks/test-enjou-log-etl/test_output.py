@@ -26,7 +26,7 @@ def test_reading_avro():
     path_json_line = dir_output + "log"
     path_avro = dir_output + "log.avro"
 
-    # read
+    # read log files
     records_json_line = read_json_lines(filepath=path_json_line)
     records_avro = read_avro(filepath=path_avro)
 
