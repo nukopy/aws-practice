@@ -247,7 +247,6 @@ Resources:
       #   - Arn
       SourceArn: !Sub "arn:aws:s3:::${NameBucketLogging}"
 
-
   ##############################
   # CloudWatch Logs
   ##############################
