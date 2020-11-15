@@ -42,6 +42,17 @@ TODO: 他のリソースを正確に書く
   - [x] `s3-bucket-lambda-deploy-packages`
     - ETL タスク用のスタック作成前に，この S3 バケットを CFn で作成する必要がある
 
+## 環境構築
+
+- Python 3.9
+
+```sh
+python -m venv venv
+source venv/bin/activate
+pip install -U pip
+poetry install
+```
+
 ## デプロイ
 
 ### 準備
