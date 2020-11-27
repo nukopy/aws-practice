@@ -8,6 +8,10 @@
 
 ## deploy
 
+1. スタックの構築
+2. コンソールから，DynamoDB のテーブルの Data Stream の設定を変更して DynamoDB のテーブルと既存の Data Stream を関連づける
+3. `batch_writing.py` を実行し，テーブルに要素を追加し，変更イベントを発生させる
+
 ```sh
 # deploy
 sh deploy.sh deploy
