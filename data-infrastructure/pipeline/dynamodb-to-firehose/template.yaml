@@ -1,0 +1,121 @@
+AWSTemplateFormatVersion: '2010-09-09'
+# Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  ####################
+  # IAM Role, Policy
+  ####################
+
+  RoleFirehose:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: "test-firehose"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: "sts:AssumeRole"
+
+  PolicyS3Access:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "s3-access"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:AbortMultipartUpload
+              - s3:GetBucketLocation
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:ListBucketMultipartUploads
+              - s3:PutObject
+            Resource:
+              - !Join
+                - ""
+                - - "arn:aws:s3:::"
+                  - !Ref TestBucket
+              - !Join
+                - ""
+                - - "arn:aws:s3:::"
+                  - !Ref TestBucket
+                  - "*"
+      Roles:
+        - !Ref RoleFirehose
+
+  PolicyDataStreamAccess:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: "data-stream-access"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              # - "kinesis:*"
+              # - "kinesis:DescribeStream"
+              - "*"
+            Resource: "*"
+            # Resource: "arn:aws:kinesis:ap-northeast-1:489089015667:stream/*"
+      Roles:
+        - !Ref RoleFirehose
+
+  ####################
+  # Resources
+  ####################
+
+  TestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join ["-", [!Ref "AWS::StackName", !Ref "AWS::AccountId", !Ref "AWS::Region"]]
+
+  TestDynamodbTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Join ["-", [!Ref "AWS::StackName", "table"]]
+      AttributeDefinitions: 
+        - AttributeName: "id"
+          AttributeType: S
+        - AttributeName: "test_id"
+          AttributeType: S
+      KeySchema: 
+        - AttributeName: "id"
+          KeyType: HASH  # Partition key
+        - AttributeName: "test_id"
+          KeyType: RANGE  # Sort key
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  TestDataStream: 
+    Type: AWS::Kinesis::Stream 
+    Properties: 
+        Name: !Join ["-", [!Ref "AWS::StackName", "data-stream"]]
+        RetentionPeriodHours: 168  # 1 day(24 h) ~ 7 day(168 h)
+        ShardCount: 3
+
+  TestFirehoseStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    DependsOn: 
+      - PolicyS3Access
+      - PolicyDataStreamAccess
+    Properties:
+      DeliveryStreamName: !Join ["-", [!Ref "AWS::StackName", "delivery-stream"]]
+      DeliveryStreamType: KinesisStreamAsSource
+      # data source
+      KinesisStreamSourceConfiguration:
+        RoleARN: !GetAtt [RoleFirehose, "Arn"]
+        KinesisStreamARN: !GetAtt [TestDataStream, "Arn"]
+      # data destination
+      ExtendedS3DestinationConfiguration:
+        RoleARN: !GetAtt [RoleFirehose, "Arn"]
+        BucketARN: !GetAtt [TestBucket, "Arn"]
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 128
+        CompressionFormat: UNCOMPRESSED
+        Prefix: test/data/!{timestamp:yyyy/MM/dd}/
+        ErrorOutputPrefix: test/errors/!{firehose:error-output-type}/!{timestamp:yyyy/MM/dd}/
