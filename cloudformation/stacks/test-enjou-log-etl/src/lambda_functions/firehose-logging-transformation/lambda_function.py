@@ -95,6 +95,7 @@ def filter_logEvents(logEvents: Dict[str, Any]) -> List[Dict[str, Any]]:
         # JSON 形式のログのみ抽出
         # -2 は末尾の "\n" を除いている
         if logEvent["message"][0] == "{" and logEvent["message"][-2] == "}":
+            # TODO: JSON でエンコードできるかを try/except でエラーハンドル
             cleaned_logEvent = clean_logEvent(logEvent)
             filtered_logEvents.append(cleaned_logEvent)
 
