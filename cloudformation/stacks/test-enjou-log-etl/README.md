@@ -1,4 +1,4 @@
-# test-enjou-log-etl
+# test-log-etl
 
 AWS CloudFormation を用いて，ログを処理する ETL タスクのためのリソースのプロビジョニングを行う．
 
@@ -12,11 +12,11 @@ AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Fi
 
 ### システムアーキテクチャ
 
-![img](./docs/img/test-enjou-system-architecture.png)
+![img](./docs/img/test-system-architecture.png)
 
 ### AWS リソース
 
-resouce prefix: `test-enjou-log-etl-cfn`
+resouce prefix: `test-log-etl-cfn`
 
 TODO: 他のリソースを正確に書く
 
@@ -64,7 +64,7 @@ TODO: 一時的なバケットを作成して終わったらそれを消去す�
 
 ```sh
 git clone [URL]
-cd aws-practice/cloudformation/stacks/test-enjou-log-etl
+cd aws-practice/cloudformation/stacks/test-log-etl
 sh deploy-s3-bucket-for-lambda-deploy-packages.sh deploy
 ```
 
@@ -105,8 +105,8 @@ sh utils/delete-stack [STACK NAME]  # スタックの消去
     - この部分はログのソースとなるため，実際のプロダクトでは他のサービスに置き換わる可能性がある．ここでは，デバッグを楽にするために，Lambda 関数による CloudWatch Logs へのログ出力により，後続の ETL タスクが発火するようになっている
     - **注意：ETL タスクの結果は S3 バケットへ吐かれるが，Firehose のバッファリングの設定により，ログが S3 へ吐かれるまで数分かかる可能性がある**
   - 以下 2 つの S3 バケットの中身を確認し，オブジェクトをローカルに保存する．`output` ディレクトリに，それぞれ `log`，`log.avro` というファイル名でダウンロードする
-    - JSON-line 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging`
-    - Avro 形式のログが吐かれる S3 バケット：`test-enjou-log-etl-cfn-s3-bucket-logging-avro`
+    - JSON-line 形式のログが吐かれる S3 バケット：`test-log-etl-cfn-s3-bucket-logging`
+    - Avro 形式のログが吐かれる S3 バケット：`test-log-etl-cfn-s3-bucket-logging-avro`
   - 以下のコマンドで簡易的なテストを実行
     - テスト項目
       - Avro 形式のファイルが読み込めるか

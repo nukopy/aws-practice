@@ -62,7 +62,7 @@ Lambda Function などで作り込みを行わず，CloudWatch Logs のログデ
     "Effect": "Allow",
     "Principal": { "Service": "firehose.amazonaws.com" },
     "Action": "sts:AssumeRole",
-    "Condition": { "StringEquals": { "sts:ExternalId":"[account-id]" } }
+    "Condition": { "StringEquals": { "sts:ExternalId": "[account-id]" } }
   }
 }
 ```
@@ -84,16 +84,15 @@ aws iam create-role --role-name firehose-to-s3 --assume-role-policy-document fil
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [ 
-          "s3:AbortMultipartUpload", 
-          "s3:GetBucketLocation", 
-          "s3:GetObject", 
-          "s3:ListBucket", 
-          "s3:ListBucketMultipartUploads", 
-          "s3:PutObject" ],
-      "Resource": [ 
-          "arn:aws:s3:::my-bucket", 
-          "arn:aws:s3:::my-bucket/*" ]
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": ["arn:aws:s3:::my-bucket", "arn:aws:s3:::my-bucket/*"]
     }
   ]
 }
@@ -113,11 +112,11 @@ aws iam put-role-policy  --role-name firehose-to-s3 --policy-name firehose-to-s3
 aws firehose create-delivery-stream \
    --delivery-stream-name "${KINESIS_FIREHOSE_STREAM}" \
    --s3-destination-configuration \
-  '{"RoleARN": "arn:aws:iam::489089015667:role/firehose-to-s3", "BucketARN": "arn:aws:s3:::test-enjou-cloudwatch-logs-to-s3"}'
+  '{"RoleARN": "arn:aws:iam::489089015667:role/firehose-to-s3", "BucketARN": "arn:aws:s3:::test-cloudwatch-logs-to-s3"}'
 
 # 出力
 {
-    "DeliveryStreamARN": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-enjou-cloudwatch-logs-to-s3"
+    "DeliveryStreamARN": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-cloudwatch-logs-to-s3"
 }
 ```
 
@@ -134,8 +133,8 @@ aws firehose describe-delivery-stream --delivery-stream-name "${KINESIS_FIREHOSE
 # 出力
 {
     "DeliveryStreamDescription": {
-        "DeliveryStreamName": "test-enjou-cloudwatch-logs-to-s3",
-        "DeliveryStreamARN": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-enjou-cloudwatch-logs-to-s3",
+        "DeliveryStreamName": "test-cloudwatch-logs-to-s3",
+        "DeliveryStreamARN": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-cloudwatch-logs-to-s3",
         "DeliveryStreamStatus": "ACTIVE",
         "DeliveryStreamEncryptionConfiguration": {
             "Status": "DISABLED"
@@ -149,7 +148,7 @@ aws firehose describe-delivery-stream --delivery-stream-name "${KINESIS_FIREHOSE
                 "DestinationId": "destinationId-000000000001",
                 "S3DestinationDescription": {
                     "RoleARN": "arn:aws:iam::489089015667:role/firehose-to-s3",
-                    "BucketARN": "arn:aws:s3:::test-enjou-cloudwatch-logs-to-s3",
+                    "BucketARN": "arn:aws:s3:::test-cloudwatch-logs-to-s3",
                     "Prefix": "",
                     "ErrorOutputPrefix": "",
                     "BufferingHints": {
@@ -166,7 +165,7 @@ aws firehose describe-delivery-stream --delivery-stream-name "${KINESIS_FIREHOSE
                 },
                 "ExtendedS3DestinationDescription": {
                     "RoleARN": "arn:aws:iam::489089015667:role/firehose-to-s3",
-                    "BucketARN": "arn:aws:s3:::test-enjou-cloudwatch-logs-to-s3",
+                    "BucketARN": "arn:aws:s3:::test-cloudwatch-logs-to-s3",
                     "Prefix": "",
                     "ErrorOutputPrefix": "",
                     "BufferingHints": {
@@ -245,13 +244,13 @@ aws iam create-role \
 
 ```json
 {
-    "Statement":[
-      {
-        "Effect":"Allow",
-        "Action":["firehose:*"],
-        "Resource":["arn:aws:firehose:region:123456789012:*"]
-      }
-    ]
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["firehose:*"],
+      "Resource": ["arn:aws:firehose:region:123456789012:*"]
+    }
+  ]
 }
 ```
 
@@ -303,11 +302,11 @@ An error occurred (InvalidParameterException) when calling the PutSubscriptionFi
 サブスクリプションフィルタを設定したら，CloudWatch Logs によりフィルタパターンに一致するすべての受信ログイベントが Amazon Kinesis Data Firehose 送信ストリームに転送される．データは，Amazon Kinesis Data Firehose 配信ストリームに設定された時間の間隔（デフォルトでは 300 sec），データサイズ（デフォルトでは 5 MB）に基づいて，Amazon S3 に表示される．十分な時間が経過すると，Amazon S3 バケットをチェックしてデータを確認できる．
 
 ```sh
-aws s3api list-objects --bucket "test-enjou-cloudwatch-logs-to-s3"
+aws s3api list-objects --bucket "test-cloudwatch-logs-to-s3"
 {
     "Contents": [
         {
-            "Key": "2020/11/06/04/test-enjou-cloudwatch-logs-to-s3-2-2020-11-06-04-57-58-303e3203-e31b-4c6a-bbcd-e2e801cce9cb",
+            "Key": "2020/11/06/04/test-cloudwatch-logs-to-s3-2-2020-11-06-04-57-58-303e3203-e31b-4c6a-bbcd-e2e801cce9cb",
             "LastModified": "2020-11-06T04:59:02+00:00",
             "ETag": "\"569537ed3dd83b87463fb17499d032db\"",
             "Size": 198,
@@ -318,7 +317,7 @@ aws s3api list-objects --bucket "test-enjou-cloudwatch-logs-to-s3"
             }
         },
         {
-            "Key": "2020/11/06/05/test-enjou-cloudwatch-logs-to-s3-2-2020-11-06-05-03-49-20e68c01-23fb-4451-9d19-03cd3e48ccd4",
+            "Key": "2020/11/06/05/test-cloudwatch-logs-to-s3-2-2020-11-06-05-03-49-20e68c01-23fb-4451-9d19-03cd3e48ccd4",
             "LastModified": "2020-11-06T05:04:52+00:00",
             "ETag": "\"f52b83ee34a3e873577c3eb99c208c30\"",
             "Size": 1963,
@@ -335,7 +334,7 @@ aws s3api list-objects --bucket "test-enjou-cloudwatch-logs-to-s3"
 上記の各オブジェクトの Key 名を利用して gzip 形式でダウンロードする．Amazon S3 オブジェクトのデータは gzip 形式で圧縮される．
 
 ```sh
-aws s3api get-object --bucket 'test-enjou-cloudwatch-logs-to-s3' --key '2020/11/06/05/test-enjou-cloudwatch-logs-to-s3-2-2020-11-06-05-03-49-20e68c01-23fb-4451-9d19-03cd3e48ccd4' testfile.gz
+aws s3api get-object --bucket 'test-cloudwatch-logs-to-s3' --key '2020/11/06/05/test-cloudwatch-logs-to-s3-2-2020-11-06-05-03-49-20e68c01-23fb-4451-9d19-03cd3e48ccd4' testfile.gz
 ```
 
 gzip 形式の raw データは，コマンドラインから次の UNIX コマンドを使用して調べることができる．CloudWatch Logs のログは JSON 形式のため，解凍の結果を JSON ファイルに吐くと中身がエディタなどで見やすい状態で見れる．

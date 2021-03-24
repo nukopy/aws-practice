@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # variables
-Prefix="test-enjou-cfn"
+Prefix="test-cfn"
 BUCKET_NAME="${Prefix}-lambda-deploy-packages"
 CFN_TEMPLATE="./template.yml"
 CFN_TEMPLATE_PACKAGED="./template-packaged.yml"

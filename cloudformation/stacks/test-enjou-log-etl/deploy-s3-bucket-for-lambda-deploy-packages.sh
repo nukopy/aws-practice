@@ -8,10 +8,10 @@ if [ $# = 1 ] && [ $1 = "deploy" ]; then
 fi
 
 CFN_TEMPLATE="./templates/template-s3-bucket-for-lambda-deploy-packages.yml"
-CFN_STACK_NAME="test-enjou-log-etl-cfn-s3-bucket-for-lambda-deploy-packages"
+CFN_STACK_NAME="test-log-etl-cfn-s3-bucket-for-lambda-deploy-packages"
 
 # deploy
-Prefix="test-enjou-log-etl-cfn"
+Prefix="test-log-etl-cfn"
 
 aws cloudformation deploy \
   --template "${CFN_TEMPLATE}" \

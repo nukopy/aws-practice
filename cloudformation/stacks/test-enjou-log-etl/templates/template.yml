@@ -1,14 +1,14 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Stack for ETL task of "Enjou"
+Description: Stack for ETL task
 Parameters:
   Prefix:
     Type: String
-    Description: Prefix name of resources like "test-enjou-cfn"
-    Default: "test-enjou-log-etl-cfn"
-  NameBucketLogging:  # S3 with Lambda で循環参照回避のためのパラメータ
+    Description: Prefix name of resources like "test-cfn"
+    Default: "test-log-etl-cfn"
+  NameBucketLogging: # S3 with Lambda で循環参照回避のためのパラメータ
     Type: String
     Description: Bucket name of "BucketLoggingAvro" for resolve circular dependency
-    Default: "test-enjou-log-etl-cfn-s3-bucket-logging"
+    Default: "test-log-etl-cfn-s3-bucket-logging"
 Resources:
   ##############################
   # IAM Role
@@ -113,7 +113,7 @@ Resources:
             Resource: "*"
       Roles:
         - !Ref RoleLambdaS3AvroTransformation
-  
+
   PolicyFirehoseAccess:
     Type: AWS::IAM::Policy
     Properties:
@@ -133,7 +133,7 @@ Resources:
                 - ":*"
       Roles:
         - !Ref RoleSubscriptionFilter
-  
+
   PolicyLambdaAccess:
     Type: AWS::IAM::Policy
     Properties:
@@ -230,10 +230,10 @@ Resources:
       Runtime: python3.8
       MemorySize: 256
       Timeout: 60
-  
+
   # permission
-  LambdaInvokePermission:  # Lambda の呼び出し権限を S3 バケットへ与える
-    Type: 'AWS::Lambda::Permission'
+  LambdaInvokePermission: # Lambda の呼び出し権限を S3 バケットへ与える
+    Type: "AWS::Lambda::Permission"
     Properties:
       FunctionName: !GetAtt
         - LambdaS3AvroTransformation
@@ -281,10 +281,10 @@ Resources:
   BucketLogging:
     Type: "AWS::S3::Bucket"
     Properties:
-      BucketName: !Ref NameBucketLogging  # TODO: 循環参照解決したい
+      BucketName: !Ref NameBucketLogging # TODO: 循環参照解決したい
       NotificationConfiguration:
         LambdaConfigurations:
-          - Event: "s3:ObjectCreated:*"  # "s3:ObjectCreated:Put"
+          - Event: "s3:ObjectCreated:*" # "s3:ObjectCreated:Put"
             Function: !GetAtt
               - LambdaS3AvroTransformation
               - Arn

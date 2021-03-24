@@ -1,6 +1,6 @@
 {
   "invocationId": "24b87558-afba-4d2f-8092-501974910fba",
-  "deliveryStreamArn": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-enjou-cloudwatch-logs-to-s3",
+  "deliveryStreamArn": "arn:aws:firehose:ap-northeast-1:489089015667:deliverystream/test-cloudwatch-logs-to-s3",
   "region": "ap-northeast-1",
   "records": [
     {

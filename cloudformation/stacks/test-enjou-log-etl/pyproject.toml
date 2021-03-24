@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "test-enjou-log-ctl"
+name = "test-log-ctl"
 version = "0.1.0"
 description = ""
 authors = ["nukopy <pytwbf201830@gmail.com>"]

@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Create S3 bucket for Lambda deploy packages for ETL task of "Enjou"
+Description: Create S3 bucket for Lambda deploy packages for ETL task
 Parameters:
   Prefix:
     Type: String
-    Description: Prefix name of resources like "test-enjou-cfn"
+    Description: Prefix name of resources like "test-cfn"
 Resources:
   BucketDeployPackages:
     Type: "AWS::S3::Bucket"
@@ -12,7 +12,7 @@ Resources:
 Outputs:
   ConsoleURL:
     Value: !Join
-      - ''
-      - - 'https://console.aws.amazon.com/s3/buckets/'
+      - ""
+      - - "https://console.aws.amazon.com/s3/buckets/"
         - !Ref BucketDeployPackages
     Description: Console URL of S3 Bucket for Lambda deploy packages

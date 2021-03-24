@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # variables
-CFN_STACK_NAME="test-enjou-log-etl"
+CFN_STACK_NAME="test-log-etl"
 Prefix="${CFN_STACK_NAME}-cfn"
 BUCKET_NAME="${Prefix}-s3-bucket-lambda-deploy-packages"
 CFN_TEMPLATE="./templates/template.yml"

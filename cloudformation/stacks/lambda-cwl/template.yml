@@ -1,12 +1,12 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Stack for ETL task of "Enjou"
+Description: Stack for ETL task
 Parameters:
   IAMUser:
     Type: String
-    Default: y.okuwaki@jxpress.net
+    Default: y.okuwaki@gmail.com
   Prefix:
     Type: String
-    Description: Prefix name of resources like "test-enjou-cfn"
+    Description: Prefix name of resources like "test-cfn"
   LambdaCodeDirectory:
     Type: String
     Default: "src/lambda_functions"
@@ -89,10 +89,10 @@ Resources:
     # AWS S3 bucket
     # Bucket1:
     #   Type: "AWS::S3::Bucket"
-      # Properties:
-      #   Tags:
-      #   - Key: Name
-      #     Value: FirstVPC-IGW
+    # Properties:
+    #   Tags:
+    #   - Key: Name
+    #     Value: FirstVPC-IGW
     # Bucket2:
     #   Type: AWS::EC2::InternetGateway
     #   Properties:

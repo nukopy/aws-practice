@@ -1,9 +1,9 @@
 {
   "messageType": "DATA_MESSAGE",
   "owner": "489089015667",
-  "logGroup": "/aws/lambda/test-enjou-cloudwatch-logs-to-s3",
+  "logGroup": "/aws/lambda/test-cloudwatch-logs-to-s3",
   "logStream": "2020/11/06/[$LATEST]b5d43ce5e0b34ce286daf71f5fba7175",
-  "subscriptionFilters": ["filter-test-enjou-cloudwatch-logs-to-s3"],
+  "subscriptionFilters": ["filter-test-cloudwatch-logs-to-s3"],
   "logEvents": [
     {
       "id": "35784645917584682467564390446897158447148200030505140224",

@@ -6,9 +6,9 @@
       "data": {
         "messageType": "DATA_MESSAGE",
         "owner": "489089015667",
-        "logGroup": "/aws/lambda/test-enjou-cloudwatch-logs-to-s3",
+        "logGroup": "/aws/lambda/test-cloudwatch-logs-to-s3",
         "logStream": "2020/11/06/[$LATEST]9d18d289703d4508858d6d49e5c79d11",
-        "subscriptionFilters": ["filter-test-enjou-cloudwatch-logs-to-s3"],
+        "subscriptionFilters": ["filter-test-cloudwatch-logs-to-s3"],
         "logEvents": [
           {
             "id": "35784905349869634812995005602649550903452075341308166144",
@@ -380,9 +380,9 @@
       "data": {
         "messageType": "DATA_MESSAGE",
         "owner": "489089015667",
-        "logGroup": "/aws/lambda/test-enjou-cloudwatch-logs-to-s3",
+        "logGroup": "/aws/lambda/test-cloudwatch-logs-to-s3",
         "logStream": "2020/11/06/[$LATEST]9d18d289703d4508858d6d49e5c79d11",
-        "subscriptionFilters": ["filter-test-enjou-cloudwatch-logs-to-s3"],
+        "subscriptionFilters": ["filter-test-cloudwatch-logs-to-s3"],
         "logEvents": [
           {
             "id": "35784905558939121049219597565882617156253084812204048384",

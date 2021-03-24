@@ -1,14 +1,14 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Stack for ETL task of "Enjou"
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Stack for ETL task
 Parameters:
   Prefix:
     Type: String
-    Description: Prefix name of resources like "test-enjou-cfn"
-    Default: test-enjou-log-etl-cfn
+    Description: Prefix name of resources like "test-cfn"
+    Default: test-log-etl-cfn
   NameBucketLogging:
     Type: String
     Description: Bucket name of "BucketLoggingAvro" for resolve circular dependency
-    Default: test-enjou-log-etl-cfn-s3-bucket-logging
+    Default: test-log-etl-cfn-s3-bucket-logging
 Resources:
   RoleLambdaEntryPoint:
     Type: AWS::IAM::Role
@@ -16,174 +16,174 @@ Resources:
       RoleName:
         Fn::Sub: ${Prefix}-role-lambda-entry-point
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
   RoleLambdaFirehoseTransformation:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: ${Prefix}-role-lambda-firehose-transformation
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
   RoleLambdaS3AvroTransformation:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: ${Prefix}-role-lambda-s3-avro-transformation
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
   RoleSubscriptionFilter:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: ${Prefix}-role-subscription-filter
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: logs.ap-northeast-1.amazonaws.com
-          Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: logs.ap-northeast-1.amazonaws.com
+            Action: sts:AssumeRole
   RoleFirehoseDeliveryStream:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: ${Prefix}-role-firehose-delivery-stream
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: firehose.amazonaws.com
-          Action: sts:AssumeRole
-          Condition:
-            StringEquals:
-              sts:ExternalId:
-                Ref: AWS::AccountId
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                sts:ExternalId:
+                  Ref: AWS::AccountId
   PolicyLambdaBasicExecution:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName:
         Fn::Sub: ${Prefix}-policy-lambda-basic-execution
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action:
-          - logs:CreateLogGroup
-          - logs:CreateLogStream
-          - logs:PutLogEvents
-          Resource: '*'
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
       Roles:
-      - Ref: RoleLambdaEntryPoint
-      - Ref: RoleLambdaFirehoseTransformation
-      - Ref: RoleLambdaS3AvroTransformation
+        - Ref: RoleLambdaEntryPoint
+        - Ref: RoleLambdaFirehoseTransformation
+        - Ref: RoleLambdaS3AvroTransformation
   PolicyS3FullAccess:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName:
         Fn::Sub: ${Prefix}-policy-s3-read-write
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action: s3:*
-          Resource: '*'
+          - Effect: Allow
+            Action: s3:*
+            Resource: "*"
       Roles:
-      - Ref: RoleLambdaS3AvroTransformation
+        - Ref: RoleLambdaS3AvroTransformation
   PolicyFirehoseAccess:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName:
         Fn::Sub: ${Prefix}-policy-lambda-basic-execution
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action:
-          - firehose:*
-          Resource:
-            Fn::Join:
-            - ''
-            - - 'arn:aws:firehose:'
-              - Ref: AWS::Region
-              - ':'
-              - Ref: AWS::AccountId
-              - :*
+          - Effect: Allow
+            Action:
+              - firehose:*
+            Resource:
+              Fn::Join:
+                - ""
+                - - "arn:aws:firehose:"
+                  - Ref: AWS::Region
+                  - ":"
+                  - Ref: AWS::AccountId
+                  - :*
       Roles:
-      - Ref: RoleSubscriptionFilter
+        - Ref: RoleSubscriptionFilter
   PolicyLambdaAccess:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName:
         Fn::Sub: ${Prefix}-policy-lambda-basic-execution
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action:
-          - lambda:InvokeFunction
-          Resource: '*'
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource: "*"
       Roles:
-      - Ref: RoleFirehoseDeliveryStream
+        - Ref: RoleFirehoseDeliveryStream
   PolicyFirehoseDeliveryStreamS3Access:
     Type: AWS::IAM::Policy
     Properties:
       PolicyName:
         Fn::Sub: ${Prefix}-policy-firehose-delivery-stream-s3-access
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action:
-          - s3:AbortMultipartUpload
-          - s3:GetBucketLocation
-          - s3:GetObject
-          - s3:ListBucket
-          - s3:ListBucketMultipartUploads
-          - s3:PutObject
-          Resource:
-          - Fn::Join:
-            - ''
-            - - 'arn:aws:s3:::'
-              - Ref: BucketLogging
-          - Fn::Join:
-            - ''
-            - - 'arn:aws:s3:::'
-              - Ref: BucketLogging
-              - '*'
+          - Effect: Allow
+            Action:
+              - s3:AbortMultipartUpload
+              - s3:GetBucketLocation
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:ListBucketMultipartUploads
+              - s3:PutObject
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: BucketLogging
+              - Fn::Join:
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: BucketLogging
+                    - "*"
       Roles:
-      - Ref: RoleSubscriptionFilter
-      - Ref: RoleFirehoseDeliveryStream
+        - Ref: RoleSubscriptionFilter
+        - Ref: RoleFirehoseDeliveryStream
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
       Role:
         Fn::GetAtt:
-        - RoleLambdaEntryPoint
-        - Arn
+          - RoleLambdaEntryPoint
+          - Arn
       Code:
-        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
+        S3Bucket: test-log-etl-cfn-s3-bucket-lambda-deploy-packages
         S3Key: 28c4fa481b6f5b20f0c32cc30a62705d
       FunctionName:
         Fn::Join:
-        - '-'
-        - - Ref: Prefix
-          - lambda-entry-point
+          - "-"
+          - - Ref: Prefix
+            - lambda-entry-point
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
       MemorySize: 256
@@ -193,16 +193,16 @@ Resources:
     Properties:
       Role:
         Fn::GetAtt:
-        - RoleLambdaFirehoseTransformation
-        - Arn
+          - RoleLambdaFirehoseTransformation
+          - Arn
       Code:
-        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
+        S3Bucket: test-log-etl-cfn-s3-bucket-lambda-deploy-packages
         S3Key: b98608ef726e3732bb9600f59aaac1d1
       FunctionName:
         Fn::Join:
-        - '-'
-        - - Ref: Prefix
-          - lambda-firehose-logging-transformation
+          - "-"
+          - - Ref: Prefix
+            - lambda-firehose-logging-transformation
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
       MemorySize: 256
@@ -212,16 +212,16 @@ Resources:
     Properties:
       Role:
         Fn::GetAtt:
-        - RoleLambdaS3AvroTransformation
-        - Arn
+          - RoleLambdaS3AvroTransformation
+          - Arn
       Code:
-        S3Bucket: test-enjou-log-etl-cfn-s3-bucket-lambda-deploy-packages
+        S3Bucket: test-log-etl-cfn-s3-bucket-lambda-deploy-packages
         S3Key: 7b648755f2448b4a94331aa21fafc5f7
       FunctionName:
         Fn::Join:
-        - '-'
-        - - Ref: Prefix
-          - lambda-s3-avro-transformation
+          - "-"
+          - - Ref: Prefix
+            - lambda-s3-avro-transformation
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
       MemorySize: 256
@@ -231,8 +231,8 @@ Resources:
     Properties:
       FunctionName:
         Fn::GetAtt:
-        - LambdaS3AvroTransformation
-        - Arn
+          - LambdaS3AvroTransformation
+          - Arn
       Action: lambda:InvokeFunction
       Principal: s3.amazonaws.com
       SourceAccount:
@@ -244,24 +244,24 @@ Resources:
     Properties:
       LogGroupName:
         Fn::Join:
-        - ''
-        - - /aws/lambda/
-          - Ref: LambdaEntryPoint
+          - ""
+          - - /aws/lambda/
+            - Ref: LambdaEntryPoint
       RetentionInDays: 3653
   SubscriptionFilterLogging:
     Type: AWS::Logs::SubscriptionFilter
     Properties:
       RoleArn:
         Fn::GetAtt:
-        - RoleSubscriptionFilter
-        - Arn
+          - RoleSubscriptionFilter
+          - Arn
       DestinationArn:
         Fn::GetAtt:
-        - DeliveryStreamLogging
-        - Arn
+          - DeliveryStreamLogging
+          - Arn
       LogGroupName:
         Ref: LogGroupLambdaEntryPoint
-      FilterPattern: ''
+      FilterPattern: ""
   BucketLogging:
     Type: AWS::S3::Bucket
     Properties:
@@ -269,11 +269,11 @@ Resources:
         Ref: NameBucketLogging
       NotificationConfiguration:
         LambdaConfigurations:
-        - Event: s3:ObjectCreated:*
-          Function:
-            Fn::GetAtt:
-            - LambdaS3AvroTransformation
-            - Arn
+          - Event: s3:ObjectCreated:*
+            Function:
+              Fn::GetAtt:
+                - LambdaS3AvroTransformation
+                - Arn
   BucketLoggingAvro:
     Type: AWS::S3::Bucket
     Properties:
@@ -282,7 +282,7 @@ Resources:
   DeliveryStreamLogging:
     Type: AWS::KinesisFirehose::DeliveryStream
     DependsOn:
-    - PolicyS3FullAccess
+      - PolicyS3FullAccess
     Properties:
       DeliveryStreamName:
         Fn::Sub: ${Prefix}-firehose-delivery-stream-logging
@@ -290,13 +290,13 @@ Resources:
       ExtendedS3DestinationConfiguration:
         RoleARN:
           Fn::GetAtt:
-          - RoleFirehoseDeliveryStream
-          - Arn
+            - RoleFirehoseDeliveryStream
+            - Arn
         BucketARN:
           Fn::Join:
-          - ''
-          - - 'arn:aws:s3:::'
-            - Ref: BucketLogging
+            - ""
+            - - "arn:aws:s3:::"
+              - Ref: BucketLogging
         BufferingHints:
           IntervalInSeconds: 60
           SizeInMBs: 5
@@ -305,19 +305,19 @@ Resources:
         ProcessingConfiguration:
           Enabled: true
           Processors:
-          - Type: Lambda
-            Parameters:
-            - ParameterName: LambdaArn
-              ParameterValue:
-                Fn::GetAtt:
-                - LambdaFirehoseLoggingTransformation
-                - Arn
+            - Type: Lambda
+              Parameters:
+                - ParameterName: LambdaArn
+                  ParameterValue:
+                    Fn::GetAtt:
+                      - LambdaFirehoseLoggingTransformation
+                      - Arn
         CloudWatchLoggingOptions:
           Enabled: true
           LogGroupName:
             Fn::Join:
-            - ''
-            - - /aws/kinesisfirehose/
-              - Fn::Sub: ${Prefix}-firehose-delivery-stream-logging
+              - ""
+              - - /aws/kinesisfirehose/
+                - Fn::Sub: ${Prefix}-firehose-delivery-stream-logging
           LogStreamName:
             Fn::Sub: ${Prefix}-cloudwatch-logs-firehose-delivery-stream-logging

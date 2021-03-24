@@ -14,7 +14,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "7b953dcb2049d161c434184a71e2e876",
@@ -30,7 +30,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "7c0c295340118c35820344f92870ef93",
@@ -46,7 +46,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "3f4281aff39273f68530cb51f83bb668",
@@ -62,7 +62,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "3a2548e1167266084fb0a2f45b1ee75a",
@@ -78,7 +78,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "aaf6ab71c8525ad999fd62804ba0be71",
@@ -94,7 +94,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "4d113bb1497b5e6d4cfaaa0edbca1cbd",
@@ -110,7 +110,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "e255dc277ef0b016e95b4ad940fd5a40",
@@ -126,7 +126,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "bfd88c0fa241e93aa5b4acbc532c029e",
@@ -142,7 +142,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     },
     {
       "eventID": "f8b5dfda09798e5b324a0a90dae52a4f",
@@ -158,7 +158,7 @@
         "SizeBytes": 34,
         "StreamViewType": "NEW_AND_OLD_IMAGES"
       },
-      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-enjou/stream/2020-11-06T01:17:45.069"
+      "eventSourceARN": "arn:aws:dynamodb:ap-northeast-1:489089015667:table/test-etl/stream/2020-11-06T01:17:45.069"
     }
   ]
 }

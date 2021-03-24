@@ -23,14 +23,14 @@ aws configure --profile jxpress
 
 ## IAM
 
-参考：[[個人メモ]IAM の情報をAWS CLIで確認する](https://qiita.com/isobecky74/items/92d35fa1d3063fe64dc4)
+参考：[[個人メモ]IAM の情報を AWS CLI で確認する](https://qiita.com/isobecky74/items/92d35fa1d3063fe64dc4)
 
 - IAM ユーザの権限
   - 例えば，プロファイルに使用したアクセスキーに紐づくユーザの権限を知りたい場合，以下のコマンドを実行する
 
 ```sh
 aws iam list-attached-user-policies --user-name [IAM USERNAME]
-aws iam list-attached-user-policies --user-name y.okuwaki@jxpress.net
+aws iam list-attached-user-policies --user-name y.okuwaki@gmail.com
 ```
 
 以下，出力．もし上記コマンドで指定した IAM ユーザのキーペアが AWS CLI のプロファイルに使用されている場合，以下の出力が AWS CLI における AWS リソースへのアクセス権限となる．

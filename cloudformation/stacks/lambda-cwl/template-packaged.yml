@@ -1,12 +1,12 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Stack for ETL task of "Enjou"
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Stack for ETL task
 Parameters:
   IAMUser:
     Type: String
-    Default: y.okuwaki@jxpress.net
+    Default: y.okuwaki@gmail.com
   Prefix:
     Type: String
-    Description: Prefix name of resources like "test-enjou-cfn"
+    Description: Prefix name of resources like "test-cfn"
   LambdaCodeDirectory:
     Type: String
     Default: src/lambda_functions
@@ -17,45 +17,45 @@ Resources:
       ManagedPolicyName:
         Fn::Sub: ${Prefix}-policy-lambda-basic-execution
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Action:
-          - logs:CreateLogGroup
-          - logs:CreateLogStream
-          - logs:PutLogEvents
-          Resource: '*'
+          - Effect: Allow
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+            Resource: "*"
       Users:
-      - Ref: IAMUser
+        - Ref: IAMUser
   RoleLambdaEntryPoint:
     Type: AWS::IAM::Role
     Properties:
       RoleName:
         Fn::Sub: ${Prefix}-role-lambda-entry-point
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action: sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
       ManagedPolicyArns:
-      - Ref: PolicyLambdaBasicExecution
+        - Ref: PolicyLambdaBasicExecution
   LambdaEntryPoint:
     Type: AWS::Lambda::Function
     Properties:
       Role:
         Fn::GetAtt:
-        - RoleLambdaEntryPoint
-        - Arn
+          - RoleLambdaEntryPoint
+          - Arn
       Code:
-        S3Bucket: test-enjou-cfn-lambda-deploy-packages
+        S3Bucket: test-cfn-lambda-deploy-packages
         S3Key: 98e58eca2ad4b7cda7256fee0146f473
       FunctionName:
         Fn::Join:
-        - '-'
-        - - Ref: Prefix
-          - entry-point
+          - "-"
+          - - Ref: Prefix
+            - entry-point
       Handler: lambda_function.lambda_handler
       Runtime: python3.8
       MemorySize: 256
