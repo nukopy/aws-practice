@@ -16,31 +16,30 @@ AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Fi
 
 ### AWS リソース
 
-resouce prefix: `test-log-etl-cfn`
-
-TODO: 他のリソースを正確に書く
+resource prefix: `test-log-etl-cfn`
 
 - **AWS IAM**
   - IAM Role
   - IAM Managed Policy
 - **AWS Lambda**
-  - [x] `lambda-entry-point`
-  - [x] `lambda-firehose-logging-transformation`
-  - [x] `lambda-s3-avro-transformation`
+  - `lambda-entry-point`
+  - `lambda-firehose-logging-transformation`
+  - `lambda-s3-avro-transformation`
 - **Amazon CloudWatch Logs**
   - Log Group
   - Subscription Filter
 - **Amaozn S3**
-  - [x] `s3-bucket-logging`
-  - [x] `s3-bucket-logging-avro`
+  - `s3-bucket-logging`
+  - `s3-bucket-logging-avro`
 - **Amazon Kinesis Data Firehose**
   - Delivery Stream
 
 ### その他 AWS リソース
 
 - **Amazon S3**
-  - [x] `s3-bucket-lambda-deploy-packages`
-    - ETL タスク用のスタック作成前に，この S3 バケットを CFn で作成する必要がある
+  - `s3-bucket-lambda-deploy-packages`
+    - ETL タスク用のスタック作成前に，Lambda の zip ファイルをアップロードする用の S3 バケットを CFn で作成する必要がある
+    - SAM を使う場合はこれは必要ない
 
 ## 環境構築
 
