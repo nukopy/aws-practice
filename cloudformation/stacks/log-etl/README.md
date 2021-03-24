@@ -12,7 +12,7 @@ AWS Lambda --> CloudWatch Logs --(サブスクリプションフィルタ)--> Fi
 
 ### システムアーキテクチャ
 
-![img](./docs/img/test-system-architecture.png)
+![img](./docs/img/test-log-etl-architecture.png)
 
 ### AWS リソース
 
